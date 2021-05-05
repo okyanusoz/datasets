@@ -540,10 +540,9 @@ class DatasetBuilder(registered.RegisteredDataset):
         `False`.
       decoders: Nested dict of `Decoder` objects which allow to customize the
         decoding. The structure should match the feature structure, but only
-        customized feature keys need to be present. See
-        [the
+        customized feature keys need to be present. See [the
           guide](https://github.com/tensorflow/datasets/tree/master/docs/decode.md)
-          for more info.
+            for more info.
       read_config: `tfds.ReadConfig`, Additional options to configure the input
         pipeline (e.g. seed, num parallel reads,...).
       as_supervised: `bool`, if `True`, the returned `tf.data.Dataset` will have
@@ -572,6 +571,13 @@ class DatasetBuilder(registered.RegisteredDataset):
 
     read_config = read_config or read_config_lib.ReadConfig()
 
+    if read_config.interleave_cycle_length == read_config_lib.MISSING:
+      read_config = _set_default_interleave_cycle_length(
+          read_config, disable_shuffling=self.info.disable_shuffling)
+
+    if self.info.disable_shuffling:
+      _verify_read_config_for_ordered_dataset(
+          read_config, dataset_name=self.name, shuffle_files=shuffle_files)
     # Create a dataset for each of the given splits
     build_single_dataset = functools.partial(
         self._build_single_dataset,
@@ -944,9 +950,6 @@ class FileReaderBuilder(DatasetBuilder):
       read_config=None,
       shuffle_files=False,
   ) -> tf.data.Dataset:
-    # TODO(alcastano): Disable shuffling during reading
-    if self.info.disable_shuffling:
-      raise NotImplementedError
     decode_fn = functools.partial(
         self.info.features.decode_example, decoders=decoders)
     return self._tfrecords_reader.read(
@@ -1215,6 +1218,41 @@ def _save_default_config_name(
     tmp_config_path.write_text(json.dumps(data))
 
 
+def _set_default_interleave_cycle_length(
+    read_config: read_config_lib.ReadConfig, disable_shuffling: bool):
+  if disable_shuffling:
+    read_config = dataclasses.replace(read_config, interleave_cycle_length=1)
+    logging.info(
+        "`interleave_cycle_length` set to 1 to read examples in order.")
+  else:
+    read_config = dataclasses.replace(read_config, interleave_cycle_length=16)
+  return read_config
+
+
+def _verify_read_config_for_ordered_dataset(
+    read_config: read_config_lib.ReadConfig, dataset_name: str,
+    shuffle_files: bool):
+  """Check that read parameters will not affect the ordering of the dataset.
+
+  The user can bypass the error by setting `disable_ordering_guard=True`.
+  """
+  error_messages = []
+  if shuffle_files:
+    error_messages.append(
+        f"`{dataset_name}` is an ordered dataset ('disable_shuffling=True'), but examples will not be read in order because `shuffle_files=True`."
+    )
+  if read_config.interleave_cycle_length != 1:
+    error_messages.append(
+        f"`{dataset_name}` is an ordered dataset ('disable_shuffling=True'), but examples will not be read in order because `ReadConfig.interleave_cycle_length != 1`."
+    )
+  if error_messages:
+    error_message = "\n".join(error_messages)
+    if read_config.disable_ordering_guard:
+      logging.warning(error_message)
+    else:
+      raise ValueError(error_message)
+
+
 def load_default_config_name(common_dir: ReadOnlyPath,) -> Optional[str]:
   """Load `builder_cls` metadata (common to all builder configs)."""
   config_path = common_dir / ".config/metadata.json"
@@ -1235,16 +1273,15 @@ def cannonical_version_for_config(
 
   Args:
     instance_or_cls: The instance or class on which get the version
-    config: The config which might contain the version, or None if the
-      dataset do not have config.
+    config: The config which might contain the version, or None if the dataset
+      do not have config.
 
   Returns:
     version: The extracted version.
   """
   if instance_or_cls.BUILDER_CONFIGS and config is None:
     raise ValueError(
-        f"Cannot infer version on {instance_or_cls.name}. Unknown config."
-    )
+        f"Cannot infer version on {instance_or_cls.name}. Unknown config.")
 
   if config and config.version:
     return utils.Version(config.version)
@@ -1254,5 +1291,4 @@ def cannonical_version_for_config(
     raise ValueError(
         f"DatasetBuilder {instance_or_cls.name} does not have a defined "
         "version. Please add a `VERSION = tfds.core.Version('x.y.z')` to the "
-        "class."
-    )
+        "class.")

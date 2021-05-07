@@ -41,14 +41,14 @@ English pronunciations
 Files are named in the following format: {digitLabel}_{speakerName}_{index}.wav
 """
 
-_DOWNLOAD_URL = "https://github.com/Jakobovski/free-spoken-digit-dataset/archive/v1.0.9.tar.gz"
+_DOWNLOAD_URL = "https://github.com/Jakobovski/free-spoken-digit-dataset/archive/v1.0.10.tar.gz"
 _HOMEPAGE_URL = "https://github.com/Jakobovski/free-spoken-digit-dataset"
 
 
 class SpokenDigit(tfds.core.GeneratorBasedBuilder):
   """Spoken Digit Dataset."""
 
-  VERSION = tfds.core.Version("1.0.9")
+  VERSION = tfds.core.Version("1.0.10")
 
   def _info(self):
     return tfds.core.DatasetInfo(
@@ -71,7 +71,7 @@ class SpokenDigit(tfds.core.GeneratorBasedBuilder):
     dl_path = dl_manager.download_and_extract(_DOWNLOAD_URL)
     extracted_dir_path = os.path.join(
         dl_path,
-        "free-spoken-digit-dataset-1.0.9")
+        "free-spoken-digit-dataset-1.0.10")
     path = os.path.join(extracted_dir_path, "recordings")
     # There is no predefined train/val/test split for this dataset.
     return [

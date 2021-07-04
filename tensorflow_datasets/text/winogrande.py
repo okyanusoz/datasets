@@ -72,15 +72,12 @@ class Winogrande(tfds.core.GeneratorBasedBuilder):
     # Winogrande has different standardized training data sizes and reports
     # numbers for each of these data sizes, so make those available.
     data_sizes = ['xs', 's', 'm', 'l', 'xl']
-    train_splits = []
-    for size in data_sizes:
-      train_splits.append(
-          tfds.core.SplitGenerator(
+    train_splits = [tfds.core.SplitGenerator(
               name=tfds.Split('train_{}'.format(size)),
               gen_kwargs={
                   'filepath':
                       os.path.join(data_dir, 'train_{}.jsonl'.format(size))
-              }))
+              }) for size in data_sizes]
     return train_splits + [
         tfds.core.SplitGenerator(
             name=tfds.Split.TEST,

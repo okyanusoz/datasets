@@ -330,10 +330,7 @@ class Writer(object):
 
 
 # Make a long out of int. Necessary for Beam on Py2.
-if six.PY2:
-  _long_for_py2 = long  # pylint: disable=invalid-name,undefined-variable
-else:
-  _long_for_py2 = lambda int_val: int_val
+_long_for_py2 = long if six.PY2 else (lambda int_val: int_val)
 
 
 class BeamWriter(object):
@@ -393,10 +390,7 @@ class BeamWriter(object):
     """Returns (shard#, (hkey, serialized_example))."""
     key, example = key_example
     serialized_example = self._serializer.serialize_example(example)
-    if self._disable_shuffling:
-      hkey = key
-    else:
-      hkey = self._hasher.hash_key(key)
+    hkey = key if self._disable_shuffling else self._hasher.hash_key(key)
     bucketid = shuffle.get_bucket_number(hkey, _BEAM_NUM_TEMP_SHARDS)
     hkey = _long_for_py2(hkey)
     bucketid = _long_for_py2(bucketid)

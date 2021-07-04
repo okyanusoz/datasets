@@ -272,11 +272,11 @@ class CivilComments(tfds.core.GeneratorBasedBuilder):
     return splits
 
   def _parse_row_as_example(self, row, toxicity_label, other_labels):
-    example = {}
-    example['id'] = row['id']
-    example['text'] = row['comment_text']
-    example['toxicity'] = float(row[toxicity_label])
-
+    example = {
+        'id': row['id'],
+        'text': row['comment_text'],
+        'toxicity': float(row[toxicity_label]),
+    }
     for label in other_labels:
       if not row[label] and (label in IDENTITY_LABELS or
                              label in COVERT_LABELS):

@@ -214,10 +214,7 @@ def clean_page(url_and_features,
   num_sentences = 0
 
   def line_has_too_long_word(line):
-    for word in line.split():
-      if len(word) > max_word_length:
-        return True
-    return False
+    return any(len(word) > max_word_length for word in line.split())
 
   for line in lines:
     line = line.strip()
@@ -340,8 +337,7 @@ def remove_duplicate_text(pages, min_num_sentences=_MIN_NUM_SENTENCES):
   # url, line
   lines_to_keep = line_to_selected_url | beam.Map(lambda x: (x[1][0], x[0]))
 
-  # Output: url, text
-  final_docs = (
+  return (
       {
           "features": pages,
           "lines": lines_to_keep
@@ -351,8 +347,6 @@ def remove_duplicate_text(pages, min_num_sentences=_MIN_NUM_SENTENCES):
           _remove_lines_from_text,
           counter_inc_fn=get_counter_inc_fn("dedupe-lines"),
           min_num_sentences=min_num_sentences))
-
-  return final_docs
 
 
 def split_wet_file(wet_file_path, counter_inc_fn=None):

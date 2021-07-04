@@ -181,10 +181,10 @@ class GenomicsOod(tfds.core.GeneratorBasedBuilder):
     with tf.io.gfile.GFile(filename) as f:
       reader = csv.DictReader(f, delimiter='\t')
       for row_id, row in enumerate(reader):
-        example = {}
-        example['seq'] = row['seq']
-        example['label'] = row['label']
-        example['seq_info'] = row['seq_info']
-        example['domain'] = row['domain']
-
+        example = {
+            'seq': row['seq'],
+            'label': row['label'],
+            'seq_info': row['seq_info'],
+            'domain': row['domain'],
+        }
         yield row_id, example

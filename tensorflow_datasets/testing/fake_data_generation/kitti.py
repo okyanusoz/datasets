@@ -110,10 +110,9 @@ def _get_dontcare_object_annotation():
 
 def _get_annotations():
   """Generates annotations for a random number of objects in the image."""
-  annotation = []
-  for _ in range(np.random.choice(range(1, 10))):
-    annotation.append(_get_object_annotation())
-
+  annotation = [
+      _get_object_annotation() for _ in range(np.random.choice(range(1, 10)))
+  ]
   # Add some DontCare objects.
   for _ in range(np.random.choice(range(1, 3))):
     annotation.append(_get_dontcare_object_annotation())
@@ -142,7 +141,7 @@ def _get_mapping_files():
   train_rand = np.random.permutation(range(1, NUM_IMAGES + 1))  # 1-based index
   fobj_rand = tempfile.NamedTemporaryFile(
       delete=False, mode="wb", suffix=".txt")
-  fobj_rand.write(",".join([str(x) for x in train_rand]))  # pytype: disable=wrong-arg-types
+  fobj_rand.write(",".join(str(x) for x in train_rand))
   fobj_rand.close()
 
   # Mapping file.

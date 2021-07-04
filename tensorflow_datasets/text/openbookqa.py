@@ -110,8 +110,7 @@ class Openbookqa(tfds.core.GeneratorBasedBuilder):
     with tf.io.gfile.GFile(filepath) as f:
       for line in f:
         row = json.loads(line)
-        question = {}
-        question['stem'] = row['question']['stem']
+        question = {'stem': row['question']['stem']}
         choices = row['question']['choices']
         question['choice_A'] = choices[0]['text']
         question['choice_B'] = choices[1]['text']

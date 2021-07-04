@@ -457,12 +457,11 @@ class DatasetBuilder(registered.RegisteredDataset):
           statistics_already_computed = bool(splits and
                                              splits[0].statistics.num_examples)
           # Update DatasetInfo metadata by computing statistics from the data.
-          if (skip_stats_computation or
-              download_config.compute_stats == download.ComputeStatsMode.SKIP or
-              download_config.compute_stats == download.ComputeStatsMode.AUTO
-              and statistics_already_computed):
-            pass
-          else:  # Mode is forced or stats do not exists yet
+          if (not skip_stats_computation
+              and download_config.compute_stats != download.ComputeStatsMode.SKIP
+              and
+              (download_config.compute_stats != download.ComputeStatsMode.AUTO
+               or not statistics_already_computed)):  # Mode is forced or stats do not exists yet
             logging.info("Computing statistics.")
             self.info.compute_dynamic_properties()
           self.info.download_size = dl_manager.downloaded_size
@@ -581,8 +580,7 @@ class DatasetBuilder(registered.RegisteredDataset):
         read_config=read_config,
         as_supervised=as_supervised,
     )
-    datasets = utils.map_nested(build_single_dataset, split, map_tuple=True)
-    return datasets
+    return utils.map_nested(build_single_dataset, split, map_tuple=True)
 
   def _build_single_dataset(
       self,
@@ -672,14 +670,9 @@ class DatasetBuilder(registered.RegisteredDataset):
     # An exception is for single shard (as shuffling is a no-op).
     # Another exception is if reshuffle is disabled (shuffling already cached)
     num_shards = len(self.info.splits[split].file_instructions)
-    if (shuffle_files and
-        # Shuffling only matter when reshuffle is True or None (default)
-        read_config.shuffle_reshuffle_each_iteration is not False and  # pylint: disable=g-bool-id-comparison
-        num_shards > 1):
-      return False
-
-    # If the dataset satisfy all the right conditions, activate autocaching.
-    return True
+    return (not shuffle_files
+            or read_config.shuffle_reshuffle_each_iteration is False
+            or num_shards <= 1)
 
   def _relative_data_dir(self, with_version=True):
     """Relative path of this dataset in data_dir."""
@@ -690,8 +683,7 @@ class DatasetBuilder(registered.RegisteredDataset):
     if not with_version:
       return builder_data_dir
 
-    version_data_dir = os.path.join(builder_data_dir, str(self._version))
-    return version_data_dir
+    return os.path.join(builder_data_dir, str(self._version))
 
   def _build_data_dir(self, given_data_dir):
     """Return the data directory for the current version.
@@ -871,12 +863,11 @@ class DatasetBuilder(registered.RegisteredDataset):
     is_custom = name not in self.builder_configs
     if is_custom:
       logging.warning("Using custom data configuration %s", name)
-    else:
-      if builder_config is not self.builder_configs[name]:
-        raise ValueError(
-            "Cannot name a custom BuilderConfig the same as an available "
-            "BuilderConfig. Change the name. Available BuilderConfigs: %s" %
-            (list(self.builder_configs.keys())))
+    elif builder_config is not self.builder_configs[name]:
+      raise ValueError(
+          "Cannot name a custom BuilderConfig the same as an available "
+          "BuilderConfig. Change the name. Available BuilderConfigs: %s" %
+          (list(self.builder_configs.keys())))
     return builder_config
 
   @utils.classproperty
@@ -1187,7 +1178,7 @@ class BeamBasedBuilder(GeneratorBasedBuilder):
 
 def _check_split_names(split_names: Iterable[str]) -> None:
   """Check that split names are valid."""
-  if "all" in set(str(s).lower() for s in split_names):
+  if "all" in {str(s).lower() for s in split_names}:
     raise ValueError(
         "`all` is a reserved keyword. Split cannot be named like this.")
 

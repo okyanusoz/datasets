@@ -133,8 +133,6 @@ class ImageGridVisualizer(visualizer.Visualizer):
 
     # Single image display
     def make_cell_fn(ax, ex):
-      plt = lazy_imports_lib.lazy_imports.matplotlib.pyplot
-
       if not isinstance(ex, dict):
         raise ValueError(
             '{} requires examples as `dict`, with the same '
@@ -146,6 +144,8 @@ class ImageGridVisualizer(visualizer.Visualizer):
       if label_key:
         label = ex[label_key]
         label_str = ds_info.features[label_key].int2str(label)
+        plt = lazy_imports_lib.lazy_imports.matplotlib.pyplot
+
         plt.xlabel('{} ({})'.format(label_str, label))
 
     # Returns the grid.

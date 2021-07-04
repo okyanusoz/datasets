@@ -90,7 +90,7 @@ class CFQConfig(tfds.core.BuilderConfig):
       if random_seed is None:
         random_seed_index = 1
         random_seed = _RANDOM_SEEDS[0]
-      elif random_seed in range(0, 10):
+      elif random_seed in range(10):
         random_seed_index = random_seed
         random_seed = _RANDOM_SEEDS[random_seed - 1]
       elif random_seed in _RANDOM_SEEDS:
@@ -194,10 +194,8 @@ class CFQ(tfds.core.GeneratorBasedBuilder):
     regex = re.compile(
         r'("%s":\s*"[^"]*").*?("%s":\s*"[^"]*")' %
         (_QUESTION_FIELD, _QUERY_FIELD), re.DOTALL)
-    return '[' + ','.join([
-        '{' + m.group(1) + ',' + m.group(2) + '}'
-        for m in regex.finditer(content)
-    ]) + ']'
+    return ('[' + ','.join('{' + m.group(1) + ',' + m.group(2) + '}'
+                           for m in regex.finditer(content))) + ']'
 
   def _generate_examples(self, base_directory, splits_file, split_id):
     """Yields examples."""

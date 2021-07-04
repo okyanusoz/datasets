@@ -70,27 +70,22 @@ class TopLevelFeature(feature_lib.FeatureConnector):
         )
     ]
 
-    # Step 3: Restore nesting [] => {}
-    nested_decoded = self._nest(flatten_decoded)
-    return nested_decoded
+    return self._nest(flatten_decoded)
 
 
 def _decode_feature(feature, example, serialized_info, decoder):
   """Decode a single feature."""
-  if decoder is not None:
-    # If the decoder is still a dict, it means that the feature is a Dataset
-    # (it wasn't flattened).
-    if isinstance(decoder, dict):
-      decode_kwargs = dict(decoders=decoder)
-      decoder = feature
-    else:
-      # Eventually overwrite the default decoding
-      decode_kwargs = {}
-      decoder.setup(feature=feature)
-  else:
+  if decoder is None:
     decode_kwargs = {}
     decoder = feature
 
+  elif isinstance(decoder, dict):
+    decode_kwargs = dict(decoders=decoder)
+    decoder = feature
+  else:
+    # Eventually overwrite the default decoding
+    decode_kwargs = {}
+    decoder.setup(feature=feature)
   sequence_rank = _get_sequence_rank(serialized_info)
   if sequence_rank == 0:
     return decoder.decode_example(example, **decode_kwargs)
@@ -111,11 +106,9 @@ def _get_sequence_rank(serialized_info):
     all_sequence_rank = [
         _get_sequence_rank(s) for s in serialized_info.values()
     ]
+  elif serialized_info.dataset_lvl > 0:
+    return 0
   else:
-    # If this is a nested dataset, we ignore the sequence_rank. We will decode
-    # the full dataset example with the Dataset decoder.
-    if serialized_info.dataset_lvl > 0:
-      return 0
     all_sequence_rank = [serialized_info.sequence_rank]
   sequence_ranks = set(all_sequence_rank)
   if len(sequence_ranks) != 1:

@@ -94,9 +94,10 @@ def _create_chunk(prefix, random_state):
   write_binary_matrix("%s-cat.mat" % prefix, class_labels.astype("int32"))
 
   # Create the auxiliary info file that contains additional labels.
-  info = []
-  for values in FACTOR_VALUES:
-    info.append(random_state.choice(values, size=(NUM_IMAGES)))
+  info = [
+      random_state.choice(values, size=(NUM_IMAGES))
+      for values in FACTOR_VALUES
+  ]
   write_binary_matrix("%s-info.mat" % prefix, np.array(info).T.astype("int32"))
 
 

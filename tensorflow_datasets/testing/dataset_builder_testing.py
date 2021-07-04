@@ -313,11 +313,8 @@ class DatasetBuilderTestCase(
     configs_to_test: List[Union[str, dataset_builder.BuilderConfig]] = []
     if self.BUILDER_CONFIG_NAMES_TO_TEST:
       for config in self.BUILDER_CONFIG_NAMES_TO_TEST:  # pylint: disable=not-an-iterable
-        if isinstance(config, dataset_builder.BuilderConfig):
-          configs_to_test.append(config)
-        elif config in self.builder.builder_configs:
-          # Append the `name` rather than the config due to
-          # https://github.com/tensorflow/datasets/issues/2348
+        if (isinstance(config, dataset_builder.BuilderConfig)
+            or config in self.builder.builder_configs):
           configs_to_test.append(config)
         else:
           raise ValueError(
@@ -475,7 +472,7 @@ class DatasetBuilderTestCase(
       )
       examples = list(
           dataset_utils.as_numpy(builder.as_dataset(split=split_name)))
-      split_to_checksums[split_name] = set(checksum(rec) for rec in examples)
+      split_to_checksums[split_name] = {checksum(rec) for rec in examples}
       self.assertLen(examples, expected_examples_number)
     for (split1, hashes1), (split2, hashes2) in itertools.combinations(
         split_to_checksums.items(), 2):
@@ -583,11 +580,9 @@ def compare_shapes_and_types(tensor_info, element_spec):
       compare_shapes_and_types(feature_info, spec._element_spec)  # pylint: disable=protected-access
     elif isinstance(feature_info, dict):
       compare_shapes_and_types(feature_info, spec)
+    elif feature_info.dtype != spec._dtype:  # pylint: disable=protected-access
+      raise TypeError(
+          f"Feature {feature_name} has type {feature_info} but expected {spec}"
+      )
     else:
-      # Some earlier versions of TF don't expose dtype and shape for the
-      # RaggedTensorSpec, so we use the protected versions.
-      if feature_info.dtype != spec._dtype:  # pylint: disable=protected-access
-        raise TypeError(
-            f"Feature {feature_name} has type {feature_info} but expected {spec}"
-        )
       utils.assert_shape_match(feature_info.shape, spec._shape)  # pylint: disable=protected-access

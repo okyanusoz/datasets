@@ -733,8 +733,11 @@ def _sample_positive_patches(image,
           'The sampling region for patches of size %r with '
           'min_overlap_threshold=%f contains less possible patches than '
           'max_number_of_trials_per_threshold=%d, in abnormality %s',
-          patch_size, min_overlap_threshold, max_number_of_trials_per_threshold,
-          abnormality_filepath)
+          patch_size,
+          min_overlap_threshold,
+          effective_range_size,
+          abnormality_filepath,
+      )
       effective_range_size = (max_y - min_y + 1) * (max_x - min_x + 1)
 
     for _ in range(effective_range_size):

@@ -154,16 +154,7 @@ class WebNlg(tfds.core.GeneratorBasedBuilder):
           triples_set = []
           target_text_i = 0
           for child_element in entry:
-            if child_element.tag == 'modifiedtripleset':
-              for i, triple in enumerate(child_element):
-                for header, content in zip(['subject', 'predicate', 'object'],
-                                           triple.text.split(' | ')):
-                  triples_set.append({
-                      'column_header': header,
-                      'row_number': i,
-                      'content': content,
-                  })
-            elif child_element.tag == 'lex':
+            if child_element.tag == 'lex':
               if not triples_set:
                 raise UnexpectedFormatError(
                     'Found language expresion with no previous triplesets.')
@@ -175,3 +166,12 @@ class WebNlg(tfds.core.GeneratorBasedBuilder):
                   'target_text': child_element.text
               }
               target_text_i += 1
+            elif child_element.tag == 'modifiedtripleset':
+              for i, triple in enumerate(child_element):
+                for header, content in zip(['subject', 'predicate', 'object'],
+                                           triple.text.split(' | ')):
+                  triples_set.append({
+                      'column_header': header,
+                      'row_number': i,
+                      'content': content,
+                  })

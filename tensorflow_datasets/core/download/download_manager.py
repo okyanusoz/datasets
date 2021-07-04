@@ -451,13 +451,12 @@ class DownloadManager(object):
       assert computed_url_info == expected_url_info  # Sanity check
       return checksum_path  # pytype: disable=bad-return-type
     elif path == url_path:
-      if checksum_path:
-        # Checksums were registered: Rename -> checksums_path
-        resource_lib.rename_info_file(path, checksum_path, overwrite=True)
-        return path.replace(checksum_path)
-      else:
+      if not checksum_path:
         # Checksums not registered: -> do nothing
         return path
+      # Checksums were registered: Rename -> checksums_path
+      resource_lib.rename_info_file(path, checksum_path, overwrite=True)
+      return path.replace(checksum_path)
     else:  # Path was downloaded in tmp dir
       dst_path = checksum_path or url_path
       resource_lib.write_info_file(
@@ -775,5 +774,4 @@ def _read_url_info(url_path: type_utils.PathLike) -> checksums.UrlInfo:
 def _map_promise(map_fn, all_inputs):
   """Map the function into each element and resolve the promise."""
   all_promises = tf.nest.map_structure(map_fn, all_inputs)  # Apply the function
-  res = tf.nest.map_structure(lambda p: p.get(), all_promises)  # Wait promises
-  return res
+  return tf.nest.map_structure(lambda p: p.get(), all_promises)

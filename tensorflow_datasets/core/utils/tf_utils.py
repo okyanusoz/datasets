@@ -70,24 +70,22 @@ class TFGraphRunner(object):
     # TF 2.0
     if tf.executing_eagerly():
       return fct(input_).numpy()
-    # TF 1.0
+    # Should compile the function if this is the first time encountered
+    if not isinstance(input_, np.ndarray):
+      input_ = np.array(input_)
+    run_args = RunArgs(fct=fct, input=input_)
+    signature = self._build_signature(run_args)
+    if signature not in self._graph_run_cache:
+      graph_run = self._build_graph_run(run_args)
+      self._graph_run_cache[signature] = graph_run
     else:
-      # Should compile the function if this is the first time encountered
-      if not isinstance(input_, np.ndarray):
-        input_ = np.array(input_)
-      run_args = RunArgs(fct=fct, input=input_)
-      signature = self._build_signature(run_args)
-      if signature not in self._graph_run_cache:
-        graph_run = self._build_graph_run(run_args)
-        self._graph_run_cache[signature] = graph_run
-      else:
-        graph_run = self._graph_run_cache[signature]
+      graph_run = self._graph_run_cache[signature]
 
-      # Then execute the cached graph
-      return graph_run.session.run(
-          graph_run.output,
-          feed_dict={graph_run.placeholder: input_},
-      )
+    # Then execute the cached graph
+    return graph_run.session.run(
+        graph_run.output,
+        feed_dict={graph_run.placeholder: input_},
+    )
 
   def _build_graph_run(self, run_args):
     """Create a new graph for the given args."""

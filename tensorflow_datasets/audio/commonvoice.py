@@ -151,13 +151,17 @@ class CommonVoice(tfds.core.GeneratorBasedBuilder):
       for i, row in enumerate(dataset):
         file_path = os.path.join(audio_path, "%s.mp3" % row["path"])
         if tf.io.gfile.exists(file_path):
-          yield i, {
-              "client_id": row["client_id"],
-              "voice": file_path,
-              "sentence": row["sentence"],
-              "upvotes": int(row["up_votes"]) if row["up_votes"] else 0,
-              "downvotes": int(row["down_votes"]) if row["down_votes"] else 0,
-              "age": row["age"],
-              "gender": row["gender"] if row["gender"] else -1,
-              "accent": row["accent"] if row["accent"] else -1
-          }
+          yield (
+              i,
+              {
+                  "client_id": row["client_id"],
+                  "voice": file_path,
+                  "sentence": row["sentence"],
+                  "upvotes": int(row["up_votes"]) if row["up_votes"] else 0,
+                  "downvotes":
+                  int(row["down_votes"]) if row["down_votes"] else 0,
+                  "age": row["age"],
+                  "gender": row["gender"] or -1,
+                  "accent": row["accent"] or -1,
+              },
+          )

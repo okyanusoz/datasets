@@ -23,8 +23,7 @@ from tensorflow_datasets.core.utils import py_utils as utils
 def _try_import(module_name):
   """Try importing a module, with an informative error message on failure."""
   try:
-    mod = importlib.import_module(module_name)
-    return mod
+    return importlib.import_module(module_name)
   except ImportError as e:
     err_msg = ("Failed importing {name}. This likely means that the dataset "
                "requires additional dependencies that have to be "

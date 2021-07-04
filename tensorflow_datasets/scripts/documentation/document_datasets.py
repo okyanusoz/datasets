@@ -296,9 +296,8 @@ def iter_documentation_builders(
       builder_doc = future.result()
       if builder_doc is None:  # Builder filtered
         continue
-      else:
-        tqdm.tqdm.write(f'Documentation generated for {builder_doc.name}...')
-        yield builder_doc
+      tqdm.tqdm.write(f'Documentation generated for {builder_doc.name}...')
+      yield builder_doc
   print('All builder documentations generated!')
 
 

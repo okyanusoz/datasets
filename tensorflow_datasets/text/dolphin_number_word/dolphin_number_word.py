@@ -94,10 +94,7 @@ class DolphinNumberWord(tfds.core.GeneratorBasedBuilder):
         # 'equations' and 'sources' will be a RaggedTensor unless we flatten
         # them into a single string. RaggedTensors are not compatible with
         # t5 tasks.
-        if 'sources' in e:
-          e['sources'] = '  '.join(e['sources'])
-        else:
-          e['sources'] = ''
+        e['sources'] = '  '.join(e['sources']) if 'sources' in e else ''
         e['equations'] = '  '.join(e['equations'])
         # Dataset appears to have duplicate entries, we add an internal
         # count to the provided entry's ID to bypass this error.

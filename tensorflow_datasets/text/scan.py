@@ -200,5 +200,4 @@ class Scan(tfds.core.GeneratorBasedBuilder):
       for idx in split[splitname + 'Idxs']:
         yield all_samples[idx]
     else:
-      for example in self._read_examples(datapath):
-        yield example
+      yield from self._read_examples(datapath)

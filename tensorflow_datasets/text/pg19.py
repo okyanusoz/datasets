@@ -73,7 +73,7 @@ class Pg19(tfds.core.GeneratorBasedBuilder):
     """Returns SplitGenerators."""
     del dl_manager  # Unused
 
-    metadata_dict = dict()
+    metadata_dict = {}
     metadata_path = os.path.join(_DATA_DIR, 'metadata.csv')
     metadata = tf.io.gfile.GFile(metadata_path).read().splitlines()
 

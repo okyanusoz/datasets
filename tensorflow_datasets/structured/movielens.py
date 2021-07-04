@@ -388,23 +388,17 @@ class Movielens(tfds.core.GeneratorBasedBuilder):
     }
 
     features_dict = {}
+    features_dict.update(movie_features_dict)
     if self.builder_config.table_option == 'movies':
-      features_dict.update(movie_features_dict)
-    # For the other cases, self.builder_config.table_option == 'ratings'.
-    # Older versions of MovieLens (1m, 100k) have demographic features.
+      pass
     elif self.builder_config.format_version == '1m':
-      features_dict.update(movie_features_dict)
       features_dict.update(rating_features_dict)
       features_dict.update(demographic_features_dict)
     elif self.builder_config.format_version == '100k':
-      # Only the 100k dataset contains exact user ages. The 1m dataset
-      # contains only bucketized age values.
-      features_dict.update(movie_features_dict)
       features_dict.update(rating_features_dict)
       features_dict.update(demographic_features_dict)
       features_dict.update(raw_user_age=tf.float32)
     else:
-      features_dict.update(movie_features_dict)
       features_dict.update(rating_features_dict)
     return tfds.core.DatasetInfo(
         builder=self,
@@ -439,8 +433,7 @@ class Movielens(tfds.core.GeneratorBasedBuilder):
       dir_path: Optional[str] = None
   ) -> Iterator[Tuple[int, Dict[str, Any]]]:
     """Yields examples by calling the corresponding parsing function."""
-    for ex in self.builder_config.parsing_fn(dir_path):
-      yield ex
+    yield from self.builder_config.parsing_fn(dir_path)
 
 
 class MovieLens(Movielens):

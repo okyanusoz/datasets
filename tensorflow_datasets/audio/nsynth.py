@@ -196,13 +196,13 @@ class Nsynth(tfds.core.BeamBasedBuilder):
   def _split_generators(self, dl_manager):
     """Returns splits."""
 
-    dl_urls = {}
-    dl_urls["examples"] = {
-        split: _BASE_DOWNLOAD_PATH + "%s.tfrecord.tar" % split
-        for split in _SPLITS
+    dl_urls = {
+        "examples": {
+            split: _BASE_DOWNLOAD_PATH + "%s.tfrecord.tar" % split
+            for split in _SPLITS
+        },
+        "instrument_labels": (_BASE_DOWNLOAD_PATH + "instrument_labels.txt"),
     }
-    dl_urls["instrument_labels"] = (
-        _BASE_DOWNLOAD_PATH + "instrument_labels.txt")
     if self.builder_config.gansynth_subset:
       dl_urls["gansynth_splits"] = (_BASE_DOWNLOAD_PATH + "gansynth_splits.csv")
     dl_paths = dl_manager.download_and_extract(dl_urls)

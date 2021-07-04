@@ -157,13 +157,10 @@ def _read_records(path, file_format=file_adapters.DEFAULT_FILE_FORMAT):
   paths = [
       p for p in paths if not p.endswith(tfrecords_writer._INDEX_PATH_SUFFIX)
   ]
-  all_recs = []
-  for fpath in paths:
-    all_recs.append(
-        list(
+  all_recs = [list(
             dataset_utils.as_numpy(
                 file_adapters.ADAPTER_FOR_FORMAT[file_format].make_tf_data(
-                    fpath))))
+                    fpath))) for fpath in paths]
   return [os.path.basename(p) for p in paths], all_recs
 
 

@@ -87,10 +87,11 @@ class CocoCaptions(coco.Coco):
     coco_train_split = coco_splits[tfds.Split.TRAIN]
     coco_val_split = coco_splits[tfds.Split.VALIDATION]
 
-    urls = {}
-    urls['karpathy_and_li_splits'] = (
+    urls = {
+        'karpathy_and_li_splits':
         'https://cs.stanford.edu/people/karpathy/deepimagesent/'
-        'caption_datasets.zip')
+        'caption_datasets.zip'
+    }
     extracted_paths = dl_manager.download_and_extract(urls)
 
     # Load split definitions.

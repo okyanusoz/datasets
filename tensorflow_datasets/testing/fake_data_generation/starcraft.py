@@ -59,9 +59,10 @@ def main(argv):
 
   feature_list["rgb_screen"] = tf.train.FeatureList(feature=frame_list)
 
-  context_feature = {}
-  context_feature["game_duration_loops"] = tf.train.Feature(
-      int64_list=tf.train.Int64List(value=[20]))
+  context_feature = {
+      "game_duration_loops":
+      tf.train.Feature(int64_list=tf.train.Int64List(value=[20]))
+  }
   context_feature["game_duration_seconds"] = tf.train.Feature(
       float_list=tf.train.FloatList(value=[20.0]))
   context_feature["n_steps"] = tf.train.Feature(

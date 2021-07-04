@@ -15,6 +15,7 @@
 
 """Amazon Customer Reviews Dataset --- US REVIEWS DATASET."""
 
+
 import collections
 import csv
 import tensorflow.compat.v2 as tf
@@ -66,10 +67,7 @@ _DATA_OPTIONS_V1_01 = ["Digital_Ebook_Purchase", "Books"]
 
 _DATA_OPTIONS_V1_02 = ["Books"]
 
-_DATA_OPTIONS = []
-
-for entry in _DATA_OPTIONS_V1_00:
-  _DATA_OPTIONS.append(entry + "_v1_00")
+_DATA_OPTIONS = [entry + "_v1_00" for entry in _DATA_OPTIONS_V1_00]
 
 for entry in _DATA_OPTIONS_V1_01:
   _DATA_OPTIONS.append(entry + "_v1_01")

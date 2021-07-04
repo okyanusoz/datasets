@@ -50,12 +50,12 @@ class _GPath(pathlib.PurePath, type_utils.ReadWritePath):
 
   def __new__(cls: Type[_P], *parts: type_utils.PathLike) -> _P:
     full_path = '/'.join(os.fspath(p) for p in parts)
-    if full_path.startswith(URI_PREFIXES):
-      prefix = full_path[:5]
-      new_prefix = _URI_MAP_ROOT[prefix]
-      return super().__new__(cls, full_path.replace(prefix, new_prefix, 1))
-    else:
+    if not full_path.startswith(URI_PREFIXES):
       return super().__new__(cls, *parts)
+
+    prefix = full_path[:5]
+    new_prefix = _URI_MAP_ROOT[prefix]
+    return super().__new__(cls, full_path.replace(prefix, new_prefix, 1))
 
   def _new(self: _P, *parts: type_utils.PathLike) -> _P:
     """Create a new `Path` child of same type."""
@@ -150,9 +150,7 @@ class _GPath(pathlib.PurePath, type_utils.ReadWritePath):
     try:
       tf.io.gfile.remove(self._path_str)
     except tf.errors.NotFoundError as e:
-      if missing_ok:
-        pass
-      else:
+      if not missing_ok:
         raise FileNotFoundError(str(e))
 
   def open(

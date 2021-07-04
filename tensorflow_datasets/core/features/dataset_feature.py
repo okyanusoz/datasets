@@ -117,9 +117,7 @@ class Dataset(sequence_feature.Sequence):
       return tf.nest.map_structure(sequence_feature.build_empty_np,
                                    self.get_serialized_info())
 
-    # Then convert back list[nested dict] => nested dict[list]
-    encoded = sequence_feature.stack_nested(ds_elements)
-    return encoded
+    return sequence_feature.stack_nested(ds_elements)
 
   def decode_example(self, serialized_example, decoders=None):
     # NOTE: By using from_tensor_slices we remove the possibility of nested
@@ -130,9 +128,8 @@ class Dataset(sequence_feature.Sequence):
     decode_fn = self.feature.decode_example
     if decoders:
       decode_fn = functools.partial(decode_fn, decoders=decoders)
-    ds = tf.data.Dataset.from_tensor_slices(serialized_example).map(
+    return tf.data.Dataset.from_tensor_slices(serialized_example).map(
         decode_fn, num_parallel_calls=tf.data.experimental.AUTOTUNE)
-    return ds
 
   def _flatten(self, x):
     """See base class for details."""

@@ -202,19 +202,17 @@ def _add_ragged_fields(example_data, tensor_info):
   # in a smarter way.
   if tensor_info.sequence_rank < 2:
     return (example_data, tensor_info)
-  # Multiple level sequence:
-  else:
-    tensor_info_length = feature_lib.TensorInfo(shape=(None,), dtype=tf.int64)
-    ragged_attr_dict = {
-        "ragged_row_lengths_{}".format(i): (length, tensor_info_length)
-        for i, length in enumerate(nested_row_lengths)
-    }
-    tensor_info_flat = feature_lib.TensorInfo(
-        shape=(None,) + tensor_info.shape[tensor_info.sequence_rank:],
-        dtype=tensor_info.dtype,
-    )
-    ragged_attr_dict["ragged_flat_values"] = (example_data, tensor_info_flat)
-    return ragged_attr_dict
+  tensor_info_length = feature_lib.TensorInfo(shape=(None,), dtype=tf.int64)
+  ragged_attr_dict = {
+      "ragged_row_lengths_{}".format(i): (length, tensor_info_length)
+      for i, length in enumerate(nested_row_lengths)
+  }
+  tensor_info_flat = feature_lib.TensorInfo(
+      shape=(None,) + tensor_info.shape[tensor_info.sequence_rank:],
+      dtype=tensor_info.dtype,
+  )
+  ragged_attr_dict["ragged_flat_values"] = (example_data, tensor_info_flat)
+  return ragged_attr_dict
 
 
 def _extract_ragged_attributes(nested_list, tensor_info):

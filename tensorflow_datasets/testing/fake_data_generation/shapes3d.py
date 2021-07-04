@@ -56,10 +56,10 @@ def _create_fake_samples():
   """
   rs = np.random.RandomState(0)
   images = rs.randint(256, size=(NUM_IMAGES, 64, 64, 3)).astype("uint8")
-  values = []
-  for factor_values in FACTOR_VALUES:
-    values.append(rs.choice(factor_values, size=(NUM_IMAGES)))
-
+  values = [
+      rs.choice(factor_values, size=(NUM_IMAGES))
+      for factor_values in FACTOR_VALUES
+  ]
   return images, np.transpose(values)
 
 

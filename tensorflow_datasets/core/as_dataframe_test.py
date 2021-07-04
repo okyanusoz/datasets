@@ -29,8 +29,7 @@ def _as_df(ds_name: str, **kwargs) -> pandas.DataFrame:
   """Loads the dataset as `pandas.DataFrame`."""
   with testing.mock_data(num_examples=3):
     ds, ds_info = load.load(ds_name, split='train', with_info=True, **kwargs)
-  df = as_dataframe.as_dataframe(ds, ds_info)
-  return df
+  return as_dataframe.as_dataframe(ds, ds_info)
 
 
 def test_as_dataframe():

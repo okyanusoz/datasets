@@ -95,10 +95,10 @@ class Div2kConfig(tfds.core.BuilderConfig):
 
 
 def _make_builder_configs():
-  configs = []
-  for data in _DATA_OPTIONS:
-    configs.append(Div2kConfig(version=tfds.core.Version("2.0.0"), name=data))
-  return configs
+  return [
+      Div2kConfig(version=tfds.core.Version("2.0.0"), name=data)
+      for data in _DATA_OPTIONS
+  ]
 
 
 class Div2k(tfds.core.GeneratorBasedBuilder):

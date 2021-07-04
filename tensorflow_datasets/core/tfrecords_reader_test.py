@@ -64,12 +64,11 @@ class GetDatasetFilesTest(testing.TestCase):
   PATH_PATTERN = 'mnist-train.tfrecord-0000%d-of-00005'
 
   def _get_files(self, instruction):
-    file_instructions = tfrecords_reader._make_file_instructions_from_absolutes(
+    return tfrecords_reader._make_file_instructions_from_absolutes(
         name='mnist',
         name2shard_lengths=self.NAME2SHARD_LENGTHS,
         absolute_instructions=[instruction],
     )
-    return file_instructions
 
   def test_no_skip_no_take(self):
     instruction = tfrecords_reader._AbsoluteInstruction('train', None, None)
@@ -167,10 +166,8 @@ class ReadInstructionTest(testing.TestCase):
 
   def check_from_ri(self, ri, expected):
     res = ri.to_absolute(self.splits)
-    expected_result = []
-    for split_name, from_, to_ in expected:
-      expected_result.append(tfrecords_reader._AbsoluteInstruction(
-          split_name, from_, to_))
+    expected_result = [tfrecords_reader._AbsoluteInstruction(
+          split_name, from_, to_) for split_name, from_, to_ in expected]
     self.assertEqual(res, expected_result)
     return ri
 
@@ -413,7 +410,7 @@ class ReaderTest(testing.TestCase):
     expected_permutations = [tuple(sum(shard, []))
                              for shard in itertools.permutations(shards)]
     ds = ds.batch(12).repeat(100)
-    read_data = set(tuple(e) for e in tfds.as_numpy(ds))
+    read_data = {tuple(e) for e in tfds.as_numpy(ds)}
     for batch in read_data:
       self.assertIn(batch, expected_permutations)
     # There are theoritically 5! (=120) different arrangements, but we would

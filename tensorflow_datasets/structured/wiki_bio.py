@@ -50,7 +50,7 @@ def _get_table(infobox_line):
   cells = infobox_line.split('\t')
   # remove empty cells
   cells = list(filter(lambda x: x.find('<none>') == -1, cells))
-  columns = set([cell[0:cell.split(':')[0].rfind('_')] for cell in cells])
+  columns = {cell[0:cell.split(':')[0].rfind('_')] for cell in cells}
   table = {col: dict() for col in columns}
   for cell in cells:
     delimiter_position_value = cell.find(':')
@@ -61,9 +61,9 @@ def _get_table(infobox_line):
     index = column_index[delimiter_column_index + 1:]
     table[column][index] = value
   infobox_line_as_table = []
-  for column in table.keys():
+  for column in table:
     row_value = ' '.join(
-        [table[column][index] for index in sorted(table[column].keys())])
+        table[column][index] for index in sorted(table[column].keys()))
     infobox_line_as_table.append({
         'column_header': column,
         'row_number': 1,
@@ -156,16 +156,14 @@ class WikiBio(tfds.core.GeneratorBasedBuilder):
                          sentences_file, article_title_file):
     """Yields examples."""
     with tf.io.gfile.GFile(id_file) as id_src, tf.io.gfile.GFile(
-        infobox_file) as infobox_src, tf.io.gfile.GFile(
-            nb_lines_file) as nb_lines_src, tf.io.gfile.GFile(
-                sentences_file) as sentences_src, tf.io.gfile.GFile(
-                    article_title_file) as article_title_src:
+          infobox_file) as infobox_src, tf.io.gfile.GFile(
+              nb_lines_file) as nb_lines_src, tf.io.gfile.GFile(
+                  sentences_file) as sentences_src, tf.io.gfile.GFile(
+                      article_title_file) as article_title_src:
       for id_, infobox, nb_lines, article_title in zip(id_src, infobox_src,
                                                        nb_lines_src,
                                                        article_title_src):
-        target_text = []
-        for _ in range(int(nb_lines)):
-          target_text.append(sentences_src.readline())
+        target_text = [sentences_src.readline() for _ in range(int(nb_lines))]
         yield id_, {
             'input_text': {
                 'table': _get_table(infobox),

@@ -614,9 +614,10 @@ def _cast_label(label):
 def _get_record_entities(passage):
   """Returns the unique set of entities."""
   text = passage["text"]
-  entities = set()
-  for entity in passage["entities"]:
-    entities.add(text[entity["start"]:entity["end"] + 1])
+  entities = {
+      text[entity["start"]:entity["end"] + 1]
+      for entity in passage["entities"]
+  }
   return sorted(entities)
 
 
@@ -624,9 +625,7 @@ def _get_record_answers(qa):
   """Returns the unique set of answers."""
   if "answers" not in qa:
     return []
-  answers = set()
-  for answer in qa["answers"]:
-    answers.add(answer["text"])
+  answers = {answer["text"] for answer in qa["answers"]}
   return sorted(answers)
 
 

@@ -294,10 +294,10 @@ class Sun397(tfds.core.GeneratorBasedBuilder):
             yield filename, record
 
   def _get_tfds_subsets_images(self):
-    splits_sets = {}
-    for split, filepath in self._tfds_split_files.items():
-      splits_sets[split] = self._load_image_set_from_file(filepath)
-    return splits_sets
+    return {
+        split: self._load_image_set_from_file(filepath)
+        for split, filepath in self._tfds_split_files.items()
+    }
 
   def _get_partition_subsets_images(self, partitions_dir):
     # Get the ID of all images in the dataset.
@@ -319,4 +319,4 @@ class Sun397(tfds.core.GeneratorBasedBuilder):
 
   def _load_image_set_from_file(self, filepath):
     with tf.io.gfile.GFile(os.fspath(filepath), mode="r") as f:
-      return set([line.strip() for line in f])
+      return {line.strip() for line in f}

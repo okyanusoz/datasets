@@ -181,13 +181,15 @@ def _get_filename_to_label_map(annotations_path, dataset_name, split):
         filename_to_label[image_filename] = -1
     else:
       # Load a map from category ID to label index.
-      category_id_to_label = {}
-      for i, category_info in enumerate(annotations['categories']):
-        category_id_to_label[category_info['id']] = i
+      category_id_to_label = {
+          category_info['id']: i
+          for i, category_info in enumerate(annotations['categories'])
+      }
       # Load a map from image ID to image filename.
-      image_id_to_filename = {}
-      for example_info in annotations['images']:
-        image_id_to_filename[example_info['id']] = example_info['file_name']
+      image_id_to_filename = {
+          example_info['id']: example_info['file_name']
+          for example_info in annotations['images']
+      }
       # Load the map from image filename to label.
       for example_info in annotations['annotations']:
         image_filename = image_id_to_filename[example_info['image_id']]

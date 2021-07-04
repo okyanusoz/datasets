@@ -48,9 +48,8 @@ class TextEncoderConfig(object):
                          "vocab_size must be None")
       encoder_cls = type(encoder)
       vocab_size = encoder.vocab_size
-    else:
-      if encoder_cls is ByteTextEncoder:
-        encoder = encoder_cls()
+    elif encoder_cls is ByteTextEncoder:
+      encoder = encoder_cls()
 
     self.encoder = encoder
     self.encoder_cls = encoder_cls
@@ -384,12 +383,7 @@ class Tokenizer(object):
     """Splits a string into tokens."""
     s = tf.compat.as_text(s)
 
-    if self.reserved_tokens:
-      # First split out the reserved tokens
-      substrs = self._reserved_tokens_re.split(s)
-    else:
-      substrs = [s]
-
+    substrs = self._reserved_tokens_re.split(s) if self.reserved_tokens else [s]
     toks = []
     for substr in substrs:
       if substr in self.reserved_tokens:
@@ -439,10 +433,7 @@ def pad_decr(ids):
   idx = -1
   while not ids[idx]:
     idx -= 1
-  if idx == -1:
-    ids = ids  # pylint: disable=self-assigning-variable
-  else:
-    ids = ids[:idx + 1]
+  ids = ids if idx == -1 else ids[:idx + 1]
   return [i - 1 for i in ids]
 
 
@@ -463,8 +454,7 @@ def _prepare_reserved_tokens(reserved_tokens):
 
 def _re_escape(s):
   """Escape regex control characters."""
-  escaped = re.sub(r"[(){}\[\].*?|^$\\+-]", r"\\\g<0>", s)
-  return escaped
+  return re.sub(r"[(){}\[\].*?|^$\\+-]", r"\\\g<0>", s)
 
 
 def _make_reserved_tokens_re(reserved_tokens):
@@ -473,8 +463,7 @@ def _make_reserved_tokens_re(reserved_tokens):
     return None
   escaped_tokens = [_re_escape(rt) for rt in reserved_tokens]
   pattern = "(%s)" % "|".join(escaped_tokens)
-  reserved_tokens_re = _re_compile(pattern)
-  return reserved_tokens_re
+  return _re_compile(pattern)
 
 
 def _find_duplicates(els):

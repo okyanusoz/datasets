@@ -116,7 +116,7 @@ def _get_inter_splits_by_group(items_and_groups, split_probs, split_number):
   Returns:
     Dictionary that looks like {split name -> set(ids)}.
   """
-  groups = sorted(set(group_id for item_id, group_id in items_and_groups))
+  groups = sorted({group_id for item_id, group_id in items_and_groups})
   rng = np.random.RandomState(split_number)
   rng.shuffle(groups)
 

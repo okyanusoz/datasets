@@ -205,7 +205,7 @@ class Sequence(top_level_feature.TopLevelFeature):
 def build_empty_np(serialized_info):
   """Build empty sequence with the shape of serialized_info."""
   return np.empty(
-      shape=tuple(s if s else 0 for s in serialized_info.shape),
+      shape=tuple(s or 0 for s in serialized_info.shape),
       dtype=serialized_info.dtype.as_numpy_dtype,
   )
 
@@ -229,9 +229,7 @@ def _np_to_list(elem):
   """Returns list from list, tuple or ndarray."""
   if isinstance(elem, list):
     return elem
-  elif isinstance(elem, tuple):
-    return list(elem)
-  elif isinstance(elem, np.ndarray):
+  elif isinstance(elem, (tuple, np.ndarray)):
     return list(elem)
   else:
     raise ValueError(

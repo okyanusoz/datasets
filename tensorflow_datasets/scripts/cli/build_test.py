@@ -34,9 +34,7 @@ _DUMMY_DATASET_PATH = tfds.core.tfds_path() / 'testing/dummy_dataset'
 class DummyDatasetNoGenerate(tfds.testing.DummyDataset):
 
   def _generate_examples(self):
-    if True:  # pylint: disable=using-constant-test
-      raise NotImplementedError('Should not be called')
-    yield
+    raise NotImplementedError('Should not be called')
 
 
 @pytest.fixture(scope='function', autouse=True)

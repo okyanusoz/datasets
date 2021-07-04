@@ -116,11 +116,11 @@ class ReadOnlyPath(PurePath, Protocol):
   """
 
   def __new__(cls: Type[T], *args: PathLike) -> T:
-    if cls in (ReadOnlyPath, ReadWritePath):
-      from tensorflow_datasets.core.utils import generic_path  # pytype: disable=import-error  # pylint: disable=g-import-not-at-top
-      return generic_path.as_path(*args)
-    else:
+    if cls not in (ReadOnlyPath, ReadWritePath):
       return super().__new__(cls, *args)
+
+    from tensorflow_datasets.core.utils import generic_path  # pytype: disable=import-error  # pylint: disable=g-import-not-at-top
+    return generic_path.as_path(*args)
 
   @abc.abstractmethod
   def exists(self) -> bool:

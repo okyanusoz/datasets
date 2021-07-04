@@ -170,7 +170,7 @@ def iter_tar(arch_f, stream=False):
       try:
         extract_file = tar.extractfile(member)
       except KeyError:
-        if not (member.islnk() or member.issym()):
+        if not member.islnk() and not member.issym():
           raise  # Forward exception non-link files which couldn't be extracted
         # The link could not be extracted, which likely indicates a corrupted
         # archive.

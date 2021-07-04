@@ -120,7 +120,7 @@ def _parse_out_timestamps(raw_texts, day_str):
         hours += 12  # chronologically ordered, but AM/PM info is absent
       prev_hours = hours
 
-      timestamps.append("{}_{:02}_{:02}".format(day_str, hours, mins))
+      timestamps.append("{}_{:02}_{:02}".format(day_str, prev_hours, mins))
       raw_text = raw_text[7:]
     else:  # System messages e.g. "=== xxx has joned #ubuntu"
       timestamps.append("")

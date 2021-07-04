@@ -70,7 +70,7 @@ def _read_csv(path):
 def _deduplicate(data):
   """Remove duplicated records."""
   cnt = collections.Counter(row["id"] for row in data)
-  nonuniq_ids = set(id for id, count in cnt.items() if count > 1)
+  nonuniq_ids = {id for id, count in cnt.items() if count > 1}
   nonuniq_data = [row for row in data if row["id"] in nonuniq_ids]
 
   unique_data = [row for row in data if row["id"] not in nonuniq_ids]

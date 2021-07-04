@@ -635,7 +635,7 @@ class ReadInstruction(object):
     if not subs:
       raise AssertionError('No instructions could be built out of %s' % spec)
     instruction = _str_to_relative_instruction(subs[0])
-    return sum([_str_to_relative_instruction(sub) for sub in subs[1:]],
+    return sum((_str_to_relative_instruction(sub) for sub in subs[1:]),
                instruction)
 
   def __add__(self, other):

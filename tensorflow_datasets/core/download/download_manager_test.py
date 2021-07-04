@@ -224,8 +224,8 @@ class DownloadManagerTest(testing.TestCase):
     # A isn't downloaded as already cached
     # C is re-downloaded as incomplete
     self.assertCountEqual(self.downloaded_urls, {b.url, c.url})
-    self.assertEqual(  # Downloaded size include cached downloads
-        manager.downloaded_size, sum([art.url_info.size for art in (a, b, c)]))
+    self.assertEqual(manager.downloaded_size,
+                     sum(art.url_info.size for art in (a, b, c)))
 
   def test_manually_downloaded(self):
     """One file is manually downloaded, one not."""

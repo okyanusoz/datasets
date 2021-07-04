@@ -207,11 +207,11 @@ def _mock_list_as_sequence() -> Iterator[None]:
   to_feature_fn = features.features_dict.to_feature
 
   def new_to_feature(value):
-    if isinstance(value, list):
-      value, = value  # List should contain a single element  # pylint: disable=self-assigning-variable
-      return features.Sequence(value)
-    else:
+    if not isinstance(value, list):
       return to_feature_fn(value)
+
+    value, = value  # List should contain a single element  # pylint: disable=self-assigning-variable
+    return features.Sequence(value)
 
   # Should this be supported nativelly ?
   with mock.patch.object(features.features_dict, 'to_feature', new_to_feature):

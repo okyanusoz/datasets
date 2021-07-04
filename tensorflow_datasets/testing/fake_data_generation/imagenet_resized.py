@@ -48,15 +48,13 @@ def _generate_data():
   output_dir = os.path.join(FLAGS.tfds_dir, "testing", "test_data",
                             "fake_examples", "imagenet_resized")
 
-  train = {}
-  train["data"] = np.zeros(shape=[3, 8, 8, 3], dtype=np.uint8)
+  train = {"data": np.zeros(shape=[3, 8, 8, 3], dtype=np.uint8)}
   train["labels"] = np.zeros(shape=[3], dtype=np.int64)
 
   _write_zipped(output_dir, train, "Imagenet8_train.npz",
                 "Imagenet8_train_npz.zip")
 
-  valid = {}
-  valid["data"] = np.ones(shape=[1, 8, 8, 3], dtype=np.uint8)
+  valid = {"data": np.ones(shape=[1, 8, 8, 3], dtype=np.uint8)}
   valid["labels"] = np.ones(shape=[1], dtype=np.int64)
 
   _write_zipped(output_dir, valid, "Imagenet8_val.npz", "Imagenet8_val_npz.zip")

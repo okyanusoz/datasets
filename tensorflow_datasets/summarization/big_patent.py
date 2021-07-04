@@ -202,7 +202,7 @@ def _get_english_words():
 
 
 def _remove_excessive_whitespace(text):
-  return " ".join([w for w in text.split(" ") if w])
+  return " ".join(w for w in text.split(" ") if w)
 
 
 def _bigpatent_clean_abstract(text):
@@ -236,13 +236,12 @@ def _bigpatent_remove_tables(sentences):
   """Remove Tables from description text."""
   # Remove tables from text
   new_sentences = []
-  i = 0
   table_start = 0
   # A table header will be a line starting with "TABLE" after zero or more
   # whitespaces, followed by an integer.
   # After the integer, the line ends, or is followed by whitespace and
   # description.
-  while i < len(sentences):
+  for i in range(len(sentences)):
     sentence = sentences[i]
     if table_start == 0:
       # Not inside a table
@@ -265,7 +264,6 @@ def _bigpatent_remove_tables(sentences):
             table_start = 0
             new_sentences.append(sentence)
             break
-    i += 1
   return new_sentences
 
 

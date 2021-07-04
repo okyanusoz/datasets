@@ -240,8 +240,7 @@ def _read_archive(archive_path, selection):
       example['metadata'] = fobj.read()
     elif fname.endswith('.tif'):
       band = fname[-7:-4]
-      if selection != 'rgb' or (
-          selection == 'rgb' and band in {'B02', 'B03', 'B04'}):
+      if selection != 'rgb' or band in {'B02', 'B03', 'B04'}:
         example[band] = fobj.read()
         example.setdefault('bands', []).append(band)
     else:

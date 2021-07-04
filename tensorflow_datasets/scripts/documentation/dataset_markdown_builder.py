@@ -182,7 +182,7 @@ class VersionSection(Section):
     # Merge all versions
     all_versions = [*builder.versions, *builder.release_notes]
     # Normalize and remove duplicates
-    all_versions = set(tfds.core.Version(v) for v in all_versions)
+    all_versions = {tfds.core.Version(v) for v in all_versions}
     for v in sorted(all_versions):  # List all available versions
       if v == builder.version:  # Highlight the default version
         version_name = '**`{}`** (default)'.format(str(v))
@@ -279,13 +279,13 @@ class AutocacheSection(Section):
         assert not cache_shuffled and cache_unshuffled
         unshuffle_cached[split_name] = None
 
-    if not len(builder.info.splits) or not builder.info.dataset_size:  # pylint: disable=g-explicit-length-test
-      autocached_info = 'Unknown'
+    if not len(builder.info.splits) or not builder.info.dataset_size:# pylint: disable=g-explicit-length-test
+      return 'Unknown'
     elif len(always_cached) == len(builder.info.splits.keys()):
-      autocached_info = 'Yes'  # All splits are auto-cached.
+      return 'Yes'
     elif len(never_cached) == len(builder.info.splits.keys()):
-      autocached_info = 'No'  # Splits never auto-cached.
-    else:  # Some splits cached, some not.
+      return 'No'
+    else:# Some splits cached, some not.
       autocached_info_parts = []
       if always_cached:
         split_names_str = ', '.join(always_cached)
@@ -297,8 +297,7 @@ class AutocacheSection(Section):
         split_names_str = ', '.join(unshuffle_cached)
         autocached_info_parts.append(
             'Only when `shuffle_files=False` ({})'.format(split_names_str))
-      autocached_info = ', '.join(autocached_info_parts)
-    return autocached_info
+      return ', '.join(autocached_info_parts)
 
   def get_key(self, builder: tfds.core.DatasetBuilder):
     return self._build_autocached_info(builder)
@@ -322,10 +321,9 @@ class SplitInfoSection(Section):
     )
 
   def content(self, builder: tfds.core.DatasetBuilder):
-    splits_str = ('\n').join([
+    splits_str = ('\n').join(
         f'`\'{split_name}\'` | {self._get_num_examples(split_info)}'
-        for split_name, split_info in sorted(builder.info.splits.items())
-    ])
+        for split_name, split_info in sorted(builder.info.splits.items()))
     return Block(
         textwrap.dedent(
             f"""
@@ -486,7 +484,7 @@ def _display_all_builders(
   common_sections = []
   unique_sections = []
   for section in all_sections:
-    if len(set(section.get_key(b) for b in builders)) == 1:
+    if len({section.get_key(b) for b in builders}) == 1:
       common_sections.append(section)
     else:
       unique_sections.append(section)
@@ -679,4 +677,4 @@ def get_markdown_string(
           all_sections=all_sections,
       ),
   ]
-  return '\n\n'.join([tfds.core.utils.dedent(s) for s in doc_str if s])
+  return '\n\n'.join(tfds.core.utils.dedent(s) for s in doc_str if s)

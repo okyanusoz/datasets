@@ -217,10 +217,7 @@ class Shuffler(object):
     if not isinstance(data, six.binary_type):
       raise AssertionError('Only bytes (not %s) can be stored in Shuffler!' %
                            (type(data)))
-    if self._disable_shuffling:
-      hkey = key
-    else:
-      hkey = self._hasher.hash_key(key)
+    hkey = key if self._disable_shuffling else self._hasher.hash_key(key)
     self._total_bytes += len(data)
     if self._in_memory:
       self._add_to_mem_buffer(hkey, data)
@@ -240,12 +237,10 @@ class Shuffler(object):
       previous_data = data
 
   def _iter_mem(self):
-    for hkey, data in sorted(self._mem_buffer):
-      yield hkey, data
+    yield from sorted(self._mem_buffer)
 
   def _iter_buckets(self):
     for bucket in self._buckets:
       bucket_data = sorted(bucket.read_values())
       bucket.del_file()
-      for hkey, data in bucket_data:
-        yield hkey, data
+      yield from bucket_data

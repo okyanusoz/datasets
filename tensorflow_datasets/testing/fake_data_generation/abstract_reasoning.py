@@ -69,11 +69,11 @@ def _random_content(random_state):
   # Randomly sample the number of relations.
   num_relations = random_state.randint(1, 5)
   # Randomly sample the relations.
-  relation_structure = []
-  for _ in range(num_relations):
-    relation_structure.append(
-        (random_state.choice(OBJECTS), random_state.choice(ATTRIBUTES),
-         random_state.choice(RELATIONS)))
+  relation_structure = [(
+      random_state.choice(OBJECTS),
+      random_state.choice(ATTRIBUTES),
+      random_state.choice(RELATIONS),
+  ) for _ in range(num_relations)]
   # Encode the relations.
   relation_structure_encoded = np.zeros((4, 12), dtype=np.int64)
   for i, relation in enumerate(relation_structure):

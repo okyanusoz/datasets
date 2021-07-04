@@ -77,9 +77,8 @@ def list_data_dirs(
   # If the data dir is explicitly given, no need to search everywhere.
   if given_data_dir:
     return [given_data_dir]
-  else:
-    all_data_dirs = _registered_data_dir | {DATA_DIR}
-    return sorted(os.path.expanduser(d) for d in all_data_dirs)
+  all_data_dirs = _registered_data_dir | {DATA_DIR}
+  return sorted(os.path.expanduser(d) for d in all_data_dirs)
 
 
 def get_default_data_dir(

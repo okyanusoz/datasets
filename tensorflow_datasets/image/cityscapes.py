@@ -80,10 +80,9 @@ class CityscapesConfig(tfds.core.BuilderConfig):
     self.ignored_ids = set()
 
     # Setup required zips and their root dir names
-    self.zip_root = {}
-    self.zip_root['images_left'] = (
-        'leftImg8bit_trainvaltest.zip', 'leftImg8bit')
-
+    self.zip_root = {
+        'images_left': ('leftImg8bit_trainvaltest.zip', 'leftImg8bit')
+    }
     if self.train_extra_split:
       self.zip_root['images_left/extra'] = (
           'leftImg8bit_trainextra.zip', 'leftImg8bit')
@@ -167,8 +166,7 @@ class Cityscapes(tfds.core.GeneratorBasedBuilder):
 
   def _info(self):
     # Enable features as necessary
-    features = {}
-    features['image_id'] = tfds.features.Text()
+    features = {'image_id': tfds.features.Text()}
     features['image_left'] = tfds.features.Image(
         shape=(1024, 2048, 3), encoding_format='png')
 
@@ -193,10 +191,10 @@ class Cityscapes(tfds.core.GeneratorBasedBuilder):
     )
 
   def _split_generators(self, dl_manager):
-    paths = {}
-    for split, (zip_file, _) in self.builder_config.zip_root.items():
-      paths[split] = os.path.join(dl_manager.manual_dir, zip_file)
-
+    paths = {
+        split: os.path.join(dl_manager.manual_dir, zip_file)
+        for split, (zip_file, _) in self.builder_config.zip_root.items()
+    }
     if any(not tf.io.gfile.exists(z) for z in paths.values()):
       msg = 'You must download the dataset files manually and place them in: '
       msg += ', '.join(paths.values())

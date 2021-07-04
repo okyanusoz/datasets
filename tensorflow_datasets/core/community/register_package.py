@@ -301,9 +301,7 @@ def _download_or_reuse_cache(
         f'{len(package_index)} datasets of the community index.'
     )
 
-  # If package was found, download it.
-  installed_package = _download_and_cache(package)
-  return installed_package
+  return _download_and_cache(package)
 
 
 def _get_last_installed_version(

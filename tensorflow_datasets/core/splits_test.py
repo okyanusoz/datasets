@@ -15,13 +15,14 @@
 
 """Tests for the Split API."""
 
+
 from tensorflow_datasets import testing
 from tensorflow_datasets.core import proto
 from tensorflow_datasets.core import splits
 from tensorflow_datasets.core.utils import shard_utils
 import tensorflow_datasets.public_api as tfds
 
-RANGE_TRAIN = list(range(0, 2000))
+RANGE_TRAIN = list(range(2000))
 RANGE_TEST = list(range(3000, 3200))
 RANGE_VAL = list(range(6000, 6010))
 
@@ -47,8 +48,7 @@ class SplitsDictTest(testing.TestCase):
         tfds.core.SplitInfo(name="train", shard_lengths=[10, 10], num_bytes=0),
         tfds.core.SplitInfo(name="test", shard_lengths=[1], num_bytes=0),
     ]
-    sd = splits.SplitDict(si, dataset_name="ds_name")
-    return sd
+    return splits.SplitDict(si, dataset_name="ds_name")
 
   def test_get(self):
     s = self.split_dict["train"]

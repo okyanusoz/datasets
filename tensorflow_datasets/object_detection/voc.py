@@ -229,10 +229,10 @@ class Voc(tfds.core.GeneratorBasedBuilder):
     if load_annotations:
       objects = list(_get_example_objects(annon_filepath))
       # Use set() to remove duplicates
-      labels = sorted(set(obj["label"] for obj in objects))
-      labels_no_difficult = sorted(set(
-          obj["label"] for obj in objects if obj["is_difficult"] == 0
-      ))
+      labels = sorted({obj["label"] for obj in objects})
+      labels_no_difficult = sorted(
+          {obj["label"]
+           for obj in objects if obj["is_difficult"] == 0})
     else:  # The test set of VOC2012 does not contain annotations
       objects = []
       labels = []

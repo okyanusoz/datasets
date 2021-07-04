@@ -152,7 +152,7 @@ class Kitti(tfds.core.GeneratorBasedBuilder):
     """
     cv2 = tfds.core.lazy_imports.cv2
 
-    all_annotations = dict()
+    all_annotations = {}
     for fpath, fobj in annotations:
       prefix, ext = os.path.splitext(fpath)
       if ext != ".txt":

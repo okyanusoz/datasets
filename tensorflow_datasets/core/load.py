@@ -62,9 +62,9 @@ def list_builders(
 ) -> List[str]:
   """Returns the string names of all `tfds.core.DatasetBuilder`s."""
   datasets = registered.list_imported_builders()
-  if with_community_datasets:
-    if visibility.DatasetType.COMMUNITY_PUBLIC.is_available():
-      datasets += community.community_register.list_builders()
+  if (with_community_datasets
+      and visibility.DatasetType.COMMUNITY_PUBLIC.is_available()):
+    datasets += community.community_register.list_builders()
   return datasets
 
 
@@ -165,8 +165,7 @@ def builder(
   # Eventually try loading from files first
   if _try_load_from_files_first(cls, **builder_kwargs):
     try:
-      b = read_only_builder.builder_from_files(str(name), **builder_kwargs)
-      return b
+      return read_only_builder.builder_from_files(str(name), **builder_kwargs)
     except registered.DatasetNotFoundError as e:
       pass
 
@@ -390,12 +389,11 @@ def _iter_full_names(current_version_only: bool) -> Iterator[str]:
   """Yield all registered datasets full_names (see `list_full_names`)."""
   for builder_name in registered.list_imported_builders():
     builder_cls_ = builder_cls(builder_name)
-    for full_name in _iter_single_full_names(
+    yield from _iter_single_full_names(
         builder_name,
         builder_cls_,
         current_version_only=current_version_only,
-    ):
-      yield full_name
+    )
 
 
 def list_full_names(current_version_only: bool = False) -> List[str]:

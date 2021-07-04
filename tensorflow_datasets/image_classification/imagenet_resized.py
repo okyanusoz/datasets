@@ -61,16 +61,11 @@ class ImagenetResizedConfig(tfds.core.BuilderConfig):
 
 def _make_builder_configs():
   """Returns BuilderConfigs."""
-  configs = []
-  for size in [8, 16, 32, 64]:
-    configs.append(
-        ImagenetResizedConfig(
+  return [ImagenetResizedConfig(
             name='%dx%d' % (size, size),
             size=size,
             description=f'Images resized to {size}x{size}',
-        ),
-    )
-  return configs
+        ) for size in [8, 16, 32, 64]]
 
 
 class ImagenetResized(tfds.core.GeneratorBasedBuilder):

@@ -181,14 +181,14 @@ def _get_dataset_source(
   Returns:
     True if the path match the expected file structure
   """
-  filter_list = {'__init__.py'}
-  suffixes_list = ('.txt', '.tsv', '.py')
-
   if not ds_path.is_dir():
     return None
-  all_filenames = set(f.name for f in ds_path.iterdir())
+  all_filenames = {f.name for f in ds_path.iterdir()}
   # The dataset package is composed of all `.py` present in the dataset folder.
   if f'{ds_path.name}.py' in all_filenames:
+    filter_list = {'__init__.py'}
+    suffixes_list = ('.txt', '.tsv', '.py')
+
     return DatasetSource(
         root_path=ds_path,
         filenames=sorted([

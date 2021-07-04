@@ -137,11 +137,10 @@ class DatasetInfo(object):
     if homepage:
       self._info_proto.location.urls[:] = [homepage]
 
-    if features:
-      if not isinstance(features, top_level_feature.TopLevelFeature):
-        raise ValueError(
-            "DatasetInfo.features only supports FeaturesDict or Sequence at "
-            "the top-level. Got {}".format(features))
+    if features and not isinstance(features, top_level_feature.TopLevelFeature):
+      raise ValueError(
+          "DatasetInfo.features only supports FeaturesDict or Sequence at "
+          "the top-level. Got {}".format(features))
     self._features = features
     self._splits = splits_lib.SplitDict([], dataset_name=self._builder.name)
     if supervised_keys is not None:
@@ -554,9 +553,7 @@ def get_dataset_feature_statistics(builder, split):
 def read_from_json(path: type_utils.PathLike) -> dataset_info_pb2.DatasetInfo:
   """Read JSON-formatted proto into DatasetInfo proto."""
   json_str = utils.as_path(path).read_text()
-  # Parse it back into a proto.
-  parsed_proto = json_format.Parse(json_str, dataset_info_pb2.DatasetInfo())
-  return parsed_proto
+  return json_format.Parse(json_str, dataset_info_pb2.DatasetInfo())
 
 
 def pack_as_supervised_ds(
@@ -571,9 +568,7 @@ def pack_as_supervised_ds(
   ):
     x_key, y_key = ds_info.supervised_keys
     ds = ds.map(lambda x, y: {x_key: x, y_key: y})
-    return ds
-  else:  # If dataset isn't a supervised tuple (input, label), return as-is
-    return ds
+  return ds
 
 
 @six.add_metaclass(abc.ABCMeta)

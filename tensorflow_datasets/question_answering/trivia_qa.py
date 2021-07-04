@@ -181,7 +181,7 @@ class TriviaQA(tfds.core.GeneratorBasedBuilder):
   def _split_generators(self, dl_manager):
     """Returns SplitGenerators."""
     cfg = self.builder_config
-    download_urls = dict()
+    download_urls = {}
     if not (cfg.unfiltered and cfg.exclude_context):
       download_urls["rc"] = _DOWNLOAD_URL_TMPL.format("rc")
     if cfg.unfiltered:

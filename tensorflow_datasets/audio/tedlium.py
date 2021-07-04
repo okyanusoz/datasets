@@ -248,9 +248,7 @@ def _parse_gender(label_str):
   """Parse gender string from STM "<label>" field."""
   gender = re.split(",|_", label_str)[-1][:-1]
   # Fix inconsistencies in the data.
-  if not gender:
-    gender = -1  # Missing label.
-  elif gender == "<NA":  # In TEDLIUM release 3 training data.
+  if not gender or gender == "<NA":
     gender = -1  # Missing label.
   elif gender == "F":
     gender = "female"
@@ -270,5 +268,4 @@ def _extract_audio_segment(sph_path, channel, start_sec, end_sec):
   start_ms = int(start_sec * 1000)
   end_ms = int(end_sec * 1000)
   segment = segment[start_ms:end_ms]
-  samples = np.array(segment.get_array_of_samples())
-  return samples
+  return np.array(segment.get_array_of_samples())

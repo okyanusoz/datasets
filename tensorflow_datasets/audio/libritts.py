@@ -114,11 +114,10 @@ class Libritts(tfds.core.BeamBasedBuilder):
   def _split_generators(self, dl_manager):
     archives = dl_manager.download(_DL_URLS)
     self._populate_metadata(archives)
-    splits = [
+    return [
         tfds.core.SplitGenerator(name=k, gen_kwargs={"archive_path": v})
         for k, v in archives.items()
     ]
-    return splits
 
   def _build_pcollection(self, pipeline, archive_path):
     """Generates examples as dicts."""
@@ -149,8 +148,7 @@ def _extract_libritts_data(archive_path):
   """Generate partial audio or transcript examples from a LibriTTS archive."""
   for path, contents in tfds.core.download.extractor.iter_tar(archive_path):
     if path.endswith(".trans.tsv"):
-      for key, example in _generate_transcripts(contents):
-        yield key, example
+      yield from _generate_transcripts(contents)
     elif path.endswith(".wav"):
       key = six.ensure_text(os.path.splitext(os.path.basename(path))[0])
       memfile = io.BytesIO(contents.read())

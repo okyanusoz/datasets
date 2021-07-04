@@ -107,7 +107,7 @@ def _get_question(topic_id, topic_name, test_id, document_id, document_str,
   question_id = question.attrib['q_id']
   for q_text in question.iter('q_str'):
     question_str = q_text.text
-  possible_answers = list()
+  possible_answers = []
   for answer in question.iter('answer'):
     answer_id = answer.attrib['a_id']
     answer_str = answer.text
@@ -267,7 +267,7 @@ class Qa4mre(tfds.core.GeneratorBasedBuilder):
   def _split_generators(self, dl_manager):
     """Returns SplitGenerators."""
     cfg = self.builder_config
-    download_urls = dict()
+    download_urls = {}
 
     if cfg.track == 'main':
       download_urls['{}.main.{}'.format(cfg.year, cfg.lang)] = os.path.join(

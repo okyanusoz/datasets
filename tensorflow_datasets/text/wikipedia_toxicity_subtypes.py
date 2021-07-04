@@ -131,11 +131,12 @@ class WikipediaToxicitySubtypes(tfds.core.GeneratorBasedBuilder):
     with tf.io.gfile.GFile(filename) as f:
       reader = csv.DictReader(f)
       for row in reader:
-        example = {}
-        example['text'] = row['comment_text']
-        example['toxicity'] = float(row['toxic'])
-        example['severe_toxicity'] = float(row['severe_toxic'])
-        example['identity_attack'] = float(row['identity_hate'])
+        example = {
+            'text': row['comment_text'],
+            'toxicity': float(row['toxic']),
+            'severe_toxicity': float(row['severe_toxic']),
+            'identity_attack': float(row['identity_hate']),
+        }
         for label in ['obscene', 'threat', 'insult']:
           example[label] = float(row[label])
         yield row['id'], example

@@ -116,10 +116,11 @@ def _generate_data_for_set(set_name, example_start, num_examples):
   filepath = os.path.join(_voc2007_output_dir(),
                           "VOCdevkit/VOC2007/ImageSets/Main/%s.txt" % set_name)
   _write_text_file(
-      filepath, "".join([
-          "%06d\n" % example_id
-          for example_id in range(example_start, example_start + num_examples)
-      ]))
+      filepath,
+      "".join("%06d\n" % example_id
+              for example_id in range(example_start, example_start +
+                                      num_examples)),
+  )
 
 
 def _generate_trainval_archive():

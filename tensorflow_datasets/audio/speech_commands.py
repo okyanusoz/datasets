@@ -120,7 +120,7 @@ class SpeechCommands(tfds.core.GeneratorBasedBuilder):
       example_id = '{}_{}'.format(word, wavname)
       if word in WORDS:
         label = word
-      elif word == SILENCE or word == BACKGROUND_NOISE:
+      elif word in [SILENCE, BACKGROUND_NOISE]:
         # The main tar file already contains all of the test files, except for
         # the silence ones. In fact it does not contain silence files at all.
         # So for the test set we take the silence files from the test tar file,

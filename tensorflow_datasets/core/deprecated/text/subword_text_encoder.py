@@ -176,12 +176,10 @@ class SubwordTextEncoder(text_encoder.TextEncoder):
     if 0 <= subword_id < len(self._subwords):
       # Subword
       return self._subwords[subword_id]
-    else:
-      # Byte
-      offset = len(self._subwords)
-      subword_id -= offset
-      bytestr = bytes(bytearray([subword_id]))
-      return bytestr
+    # Byte
+    offset = len(self._subwords)
+    subword_id -= offset
+    return bytes(bytearray([subword_id]))
 
   def _token_to_subwords(self, token):
     """Greedily split token into subwords."""

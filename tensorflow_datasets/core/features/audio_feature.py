@@ -105,17 +105,7 @@ class Audio(feature.Tensor):
 
   def repr_html(self, ex: np.ndarray) -> str:
     """Audio are displayed in the player."""
-    if self.sample_rate:
-      rate = self.sample_rate
-    else:
-      # We should display an error message once to warn the user the sample
-      # rate was auto-infered. Requirements:
-      # * Should appear only once (even though repr_html is called once per
-      #   examples)
-      # * Ideally should appear on Colab (while `logging.warning` is hidden
-      #   by default)
-      rate = 16000
-
+    rate = self.sample_rate or 16000
     audio_str = utils.get_base64(
         lambda buff: _save_wav(buff, ex, rate)
     )

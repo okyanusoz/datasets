@@ -108,5 +108,4 @@ class Gap(tfds.core.GeneratorBasedBuilder):
     """Yields examples."""
     with tf.io.gfile.GFile(filepath) as tsvfile:
       reader = csv.DictReader(tsvfile, dialect='excel-tab')
-      for i, row in enumerate(reader):
-        yield i, row
+      yield from enumerate(reader)

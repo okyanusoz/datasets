@@ -177,7 +177,7 @@ def _build_datasets(args: argparse.Namespace) -> None:
   """Build the given datasets."""
   # Eventually register additional datasets imports
   if args.imports:
-    list(importlib.import_module(m) for m in args.imports.split(','))
+    [importlib.import_module(m) for m in args.imports.split(',')]
 
   # Select datasets to generate
   datasets = (args.datasets or []) + (args.datasets_keyword or [])
@@ -385,11 +385,10 @@ def _make_download_config(
   except ImportError:
     beam = None
 
-  if beam is not None:
-    if args.beam_pipeline_options:
-      dl_config.beam_options = beam.options.pipeline_options.PipelineOptions(
-          flags=[f'--{opt}' for opt in args.beam_pipeline_options.split(',')]
-      )
+  if beam is not None and args.beam_pipeline_options:
+    dl_config.beam_options = beam.options.pipeline_options.PipelineOptions(
+        flags=[f'--{opt}' for opt in args.beam_pipeline_options.split(',')]
+    )
 
   return dl_config
 

@@ -42,10 +42,10 @@ def parse_current_ratings_data(
     dir_path: str
 ) -> Iterator[Tuple[int, Dict[str, Any]]]:
   """Parses the ratings data in current format (20m, 25m, and latest-small)."""
-  movie_info_map = {}
-  for _, movie_example in parse_current_movies_data(dir_path):
-    movie_info_map[movie_example['movie_id']] = movie_example
-
+  movie_info_map = {
+      movie_example['movie_id']: movie_example
+      for _, movie_example in parse_current_movies_data(dir_path)
+  }
   ratings_file_path = os.path.join(dir_path, 'ratings.csv')
   with tf.io.gfile.GFile(ratings_file_path) as ratings_file:
     ratings_reader = csv.DictReader(ratings_file)
@@ -86,10 +86,10 @@ def parse_1m_ratings_data(
     dir_path: str
 ) -> Iterator[Tuple[int, Dict[str, Any]]]:
   """Parses the 1m ratings data."""
-  movie_info_map = {}
-  for _, movie_example in parse_1m_movies_data(dir_path):
-    movie_info_map[movie_example['movie_id']] = movie_example
-
+  movie_info_map = {
+      movie_example['movie_id']: movie_example
+      for _, movie_example in parse_1m_movies_data(dir_path)
+  }
   users_file_path = os.path.join(dir_path, 'users.dat')
   # A list for converting occupation index to occupation string for 1M
   # dataset.
@@ -159,10 +159,11 @@ def parse_100k_movies_data(
       movie_id = categories[0]
       movie_title = categories[1]
       genre_bools = categories[5:]
-      genre_list = []
-      for index, genre_indicator in enumerate(genre_bools):
-        if genre_indicator == '1':
-          genre_list.append(all_genre_list[index])
+      genre_list = [
+          all_genre_list[index]
+          for index, genre_indicator in enumerate(genre_bools)
+          if genre_indicator == '1'
+      ]
       yield row_num, {
           'movie_id': movie_id,
           'movie_title': movie_title,
@@ -174,10 +175,10 @@ def parse_100k_ratings_data(
     dir_path: str
 ) -> Iterator[Tuple[int, Dict[str, Any]]]:
   """Parses the 100k ratings data."""
-  movie_info_map = {}
-  for _, movie_example in parse_100k_movies_data(dir_path):
-    movie_info_map[movie_example['movie_id']] = movie_example
-
+  movie_info_map = {
+      movie_example['movie_id']: movie_example
+      for _, movie_example in parse_100k_movies_data(dir_path)
+  }
   users_file_path = os.path.join(dir_path, 'u.user')
   # A list of thresholds for bucketizing user age.
   age_thresholds_list = [18, 25, 35, 45, 50, 56]

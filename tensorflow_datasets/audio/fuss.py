@@ -128,18 +128,14 @@ class Fuss(tfds.core.GeneratorBasedBuilder):
   def _split_generators(self, dl_manager):
     url, extracted_dirname = _DL_METADATA[self.builder_config.name]
     base_dir = dl_manager.download_and_extract(url)
-    splits = []
-    for split_name, split_dir in [(tfds.Split.TRAIN, "train"),
-                                  (tfds.Split.VALIDATION, "validation"),
-                                  (tfds.Split.TEST, "eval")]:
-      splits.append(
-          tfds.core.SplitGenerator(
+    return [tfds.core.SplitGenerator(
               name=split_name,
               gen_kwargs={
                   "base_dir": os.path.join(base_dir, extracted_dirname),
                   "split": split_dir,
-              }))
-    return splits
+              }) for split_name, split_dir in [(tfds.Split.TRAIN, "train"),
+                                  (tfds.Split.VALIDATION, "validation"),
+                                  (tfds.Split.TEST, "eval")]]
 
   def _parse_segments(self, path):
     segments = []
@@ -168,12 +164,10 @@ class Fuss(tfds.core.GeneratorBasedBuilder):
       for line in example_list:
         paths = line.split()
         key = _basename_without_ext(paths[0])
-        sources = []
-        for p in paths[1:]:
-          sources.append({
+        sources = [{
               "audio": os.path.join(base_dir, p),
               "label": _basename_without_ext(p).split("_")[0],
-          })
+          } for p in paths[1:]]
         segments = self._parse_segments(os.path.join(split_dir, "%s.txt" % key))
         jams = tf.io.gfile.GFile(os.path.join(split_dir,
                                               "%s.jams" % key)).read()

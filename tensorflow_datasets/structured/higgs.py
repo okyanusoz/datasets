@@ -137,5 +137,4 @@ class Higgs(tfds.core.GeneratorBasedBuilder):
 
     with tf.io.gfile.GFile(file_path) as csvfile:
       reader = csv.DictReader(csvfile, fieldnames=fieldnames)
-      for i, row in enumerate(reader):
-        yield i, row
+      yield from enumerate(reader)

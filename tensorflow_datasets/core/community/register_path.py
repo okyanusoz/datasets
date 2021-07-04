@@ -136,8 +136,7 @@ def _maybe_iterdir(path: utils.ReadOnlyPath) -> Iterator[utils.ReadOnlyPath]:
   # Use try/except rather than `.exists()` to avoid an extra RPC call
   # per namespace
   try:
-    for f in path.iterdir():
-      yield f
+    yield from path.iterdir()
   except (
       FileNotFoundError,
       tf.errors.NotFoundError,

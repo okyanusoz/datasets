@@ -180,16 +180,16 @@ class Wikihow(tfds.core.GeneratorBasedBuilder):
           summary = line[key2id[_SUMMARY]].strip()
           document = line[key2id[_DOCUMENT]].strip()
           summary, document = _filter_and_clean(summary, document)
-          if summary and document:
-            if line[key2id["title"]].strip().replace(" ", "") in title_set:
-              d = {
-                  k: line[v].strip()
-                  for k, v in key2id.items()
-                  if k not in [_SUMMARY, _DOCUMENT]
-              }
-              d[_DOCUMENT] = document
-              d[_SUMMARY] = summary
-              yield i, d
+          if (summary and document
+              and line[key2id["title"]].strip().replace(" ", "") in title_set):
+            d = {
+                k: line[v].strip()
+                for k, v in key2id.items()
+                if k not in [_SUMMARY, _DOCUMENT]
+            }
+            d[_DOCUMENT] = document
+            d[_SUMMARY] = summary
+            yield i, d
 
 
 # This functions follow data processing acoording to original paper at

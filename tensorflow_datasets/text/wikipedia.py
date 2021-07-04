@@ -193,13 +193,7 @@ class Wikipedia(tfds.core.BeamBasedBuilder):
       logging.info("generating examples from = %s", filepath)
       with tf.io.gfile.GFile(filepath, "rb") as f:
         f = bz2.BZ2File(filename=f)
-        if six.PY3:
-          # Workaround due to:
-          # https://github.com/tensorflow/tensorflow/issues/33563
-          utf_f = codecs.getreader("utf-8")(f)  # pytype: disable=wrong-arg-types
-        else:
-          utf_f = f
-
+        utf_f = codecs.getreader("utf-8")(f) if six.PY3 else f
         # To clear root, to free-up more memory than just `elem.clear()`.
         context = etree.iterparse(utf_f, events=("end",))
         context = iter(context)

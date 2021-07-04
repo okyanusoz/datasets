@@ -785,10 +785,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
            "test_common_gen_ScrambleInputStructure500.json"),
       ]
 
-      challenge_splits = []
-      for challenge_split, filename in challenge_sets:
-        challenge_splits.append(
-            tfds.core.SplitGenerator(
+      challenge_splits = [tfds.core.SplitGenerator(
                 name=challenge_split,
                 gen_kwargs={
                     "filepath":
@@ -797,8 +794,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
                     "set_name":
                         challenge_split,
                 },
-            ))
-
+            ) for challenge_split, filename in challenge_sets]
       return [
           tfds.core.SplitGenerator(
               name=tfds.Split.TRAIN,
@@ -838,10 +834,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
           ("challenge_test_scramble",
            "test_cs_restaurants_ScrambleInputStructure500.json"),
       ]
-      challenge_splits = []
-      for challenge_split, filename in challenge_sets:
-        challenge_splits.append(
-            tfds.core.SplitGenerator(
+      challenge_splits = [tfds.core.SplitGenerator(
                 name=challenge_split,
                 gen_kwargs={
                     "filepath":
@@ -850,8 +843,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
                     "set_name":
                         challenge_split,
                 },
-            ))
-
+            ) for challenge_split, filename in challenge_sets]
       return [
           tfds.core.SplitGenerator(
               name=tfds.Split.TRAIN,
@@ -907,10 +899,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
           ("challenge_test_scramble",
            "test_e2e_nlg_ScrambleInputStructure500.json"),
       ]
-      challenge_splits = []
-      for challenge_split, filename in challenge_sets:
-        challenge_splits.append(
-            tfds.core.SplitGenerator(
+      challenge_splits = [tfds.core.SplitGenerator(
                 name=challenge_split,
                 gen_kwargs={
                     "filepath":
@@ -919,7 +908,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
                     "set_name":
                         challenge_split,
                 },
-            ))
+            ) for challenge_split, filename in challenge_sets]
       return [
           tfds.core.SplitGenerator(
               name=tfds.Split.TRAIN,
@@ -953,10 +942,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
            f"validation_mlsum_{lang}_RandomSample500.json"),
           ("challenge_test_covid", f"{lang}_test_covid19_cleaned.jsonl"),
       ]
-      challenge_splits = []
-      for challenge_split, filename in challenge_sets:
-        challenge_splits.append(
-            tfds.core.SplitGenerator(
+      challenge_splits = [tfds.core.SplitGenerator(
                 name=challenge_split,
                 gen_kwargs={
                     "filepath":
@@ -965,7 +951,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
                     "set_name":
                         challenge_split,
                 },
-            ))
+            ) for challenge_split, filename in challenge_sets]
       return [
           tfds.core.SplitGenerator(
               name=tfds.Split.TRAIN,
@@ -1025,10 +1011,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
            "test_schema_guided_dialog_ScrambleInputStructure500_reformatted.json"
           ),
       ]
-      challenge_splits = []
-      for challenge_split, filename in challenge_sets:
-        challenge_splits.append(
-            tfds.core.SplitGenerator(
+      challenge_splits = [tfds.core.SplitGenerator(
                 name=challenge_split,
                 gen_kwargs={
                     "filepath":
@@ -1037,19 +1020,15 @@ class Gem(tfds.core.GeneratorBasedBuilder):
                     "set_name":
                         challenge_split,
                 },
-            ))
-
-      generators = []
-      for tfds_spl, spl in zip(
-          [tfds.Split.TRAIN, tfds.Split.VALIDATION, tfds.Split.TEST],
-          ["train", "validation", "test"]):
-        generators.append(
-            tfds.core.SplitGenerator(
+            ) for challenge_split, filename in challenge_sets]
+      generators = [tfds.core.SplitGenerator(
                 name=tfds_spl,
                 gen_kwargs={
                     "filepath": os.path.join(files["data"], "gem_sgd.json"),
                     "set_name": spl
-                }))
+                }) for tfds_spl, spl in zip(
+          [tfds.Split.TRAIN, tfds.Split.VALIDATION, tfds.Split.TEST],
+          ["train", "validation", "test"])]
       return generators + challenge_splits
     elif self.builder_config.name == "totto":
       challenge_sets = [
@@ -1059,10 +1038,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
           ("challenge_test_scramble",
            "test_totto_ScrambleInputStructure500.json"),
       ]
-      challenge_splits = []
-      for challenge_split, filename in challenge_sets:
-        challenge_splits.append(
-            tfds.core.SplitGenerator(
+      challenge_splits = [tfds.core.SplitGenerator(
                 name=challenge_split,
                 gen_kwargs={
                     "filepath":
@@ -1071,8 +1047,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
                     "set_name":
                         challenge_split,
                 },
-            ))
-
+            ) for challenge_split, filename in challenge_sets]
       return [
           tfds.core.SplitGenerator(
               name=tfds.Split.TRAIN,
@@ -1120,10 +1095,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
       if ln == "en":
         challenge_sets += [("challenge_test_numbers",
                             f"test_web_nlg_{ln}_replace_numbers_500.json")]
-      challenge_splits = []
-      for challenge_split, filename in challenge_sets:
-        challenge_splits.append(
-            tfds.core.SplitGenerator(
+      challenge_splits = [tfds.core.SplitGenerator(
                 name=challenge_split,
                 gen_kwargs={
                     "filepath":
@@ -1132,7 +1104,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
                     "set_name":
                         challenge_split,
                 },
-            ))
+            ) for challenge_split, filename in challenge_sets]
       return [
           tfds.core.SplitGenerator(
               name=tfds.Split.TRAIN,
@@ -1187,10 +1159,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
           ("challenge_test_turk_nopunc",
            "detok_test_turk_wiki_auto_asset_turk_WithoutPunctuation.json"),
       ]
-      challenge_splits = []
-      for challenge_split, filename in challenge_sets:
-        challenge_splits.append(
-            tfds.core.SplitGenerator(
+      challenge_splits = [tfds.core.SplitGenerator(
                 name=challenge_split,
                 gen_kwargs={
                     "filepath":
@@ -1199,7 +1168,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
                     "set_name":
                         challenge_split,
                 },
-            ))
+            ) for challenge_split, filename in challenge_sets]
       return [
           tfds.core.SplitGenerator(
               name=tfds.Split.TRAIN,
@@ -1278,10 +1247,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
           ("challenge_test_nopunc", "test_xsum_WithoutPunctuation500.json"),
           ("challenge_test_covid", "en_test_covid19.jsonl"),
       ]
-      challenge_splits = []
-      for challenge_split, filename in challenge_sets:
-        challenge_splits.append(
-            tfds.core.SplitGenerator(
+      challenge_splits = [tfds.core.SplitGenerator(
                 name=challenge_split,
                 gen_kwargs={
                     "filepath":
@@ -1290,7 +1256,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
                     "set_name":
                         challenge_split,
                 },
-            ))
+            ) for challenge_split, filename in challenge_sets]
       return [
           tfds.core.SplitGenerator(
               name=tfds.Split.TRAIN,
@@ -1612,21 +1578,31 @@ class Gem(tfds.core.GeneratorBasedBuilder):
           else:
             id_ += 1
             response = {
-                "gem_id": f"{self.builder_config.name}-{set_name}-{id_}",
-                "gem_parent_id": f"{self.builder_config.name}-{set_name}-{id_}",
-                "totto_id": id_,
-                "table_page_title": result["table_page_title"],
-                "table_webpage_url": result["table_webpage_url"],
-                "table_section_title": result["table_section_title"],
-                "table_section_text": result["table_section_text"],
-                "table": result["table"],
-                "highlighted_cells": result["highlighted_cells"],
-                "example_id": str(result["example_id"]),
-                "overlap_subset": str(result["overlap_subset"]),
+                "gem_id":
+                f"{self.builder_config.name}-{set_name}-{id_}",
+                "gem_parent_id":
+                f"{self.builder_config.name}-{set_name}-{id_}",
+                "totto_id":
+                id_,
+                "table_page_title":
+                result["table_page_title"],
+                "table_webpage_url":
+                result["table_webpage_url"],
+                "table_section_title":
+                result["table_section_title"],
+                "table_section_text":
+                result["table_section_text"],
+                "table":
+                result["table"],
+                "highlighted_cells":
+                result["highlighted_cells"],
+                "example_id":
+                str(result["example_id"]),
+                "overlap_subset":
+                str(result["overlap_subset"]),
+                "sentence_annotations":
+                [] if set_name == "test" else result["sentence_annotations"],
             }
-            response[
-                "sentence_annotations"] = [] if set_name == "test" else result[
-                    "sentence_annotations"]
             response["references"] = [
                 sentence["final_sentence"]
                 for sentence in response["sentence_annotations"]
@@ -1691,7 +1667,7 @@ class Gem(tfds.core.GeneratorBasedBuilder):
                       example["webnlg-id"],
               }
     elif self.builder_config.name == "wiki_auto_asset_turk":
-      if set_name in ["train", "validation"]:
+      if set_name == "train" or set_name == "validation":
         keys = [
             "source",
             "target",

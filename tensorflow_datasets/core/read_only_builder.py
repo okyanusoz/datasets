@@ -160,15 +160,14 @@ def builder_from_files(
   builder_dir = _find_builder_dir(name, **builder_kwargs)
   if builder_dir is not None:  # A generated dataset was found on disk
     return builder_from_directory(builder_dir)
-  else:
-    data_dirs = constants.list_data_dirs(
-        given_data_dir=builder_kwargs.get('data_dir')
-    )
-    raise registered.DatasetNotFoundError(
-        f'Could not find dataset files for: {name}. Make sure the dataset '
-        f'has been generated in: {data_dirs}. If the dataset has configs, you '
-        'might have to specify the config name.'
-    )
+  data_dirs = constants.list_data_dirs(
+      given_data_dir=builder_kwargs.get('data_dir')
+  )
+  raise registered.DatasetNotFoundError(
+      f'Could not find dataset files for: {name}. Make sure the dataset '
+      f'has been generated in: {data_dirs}. If the dataset has configs, you '
+      'might have to specify the config name.'
+  )
 
 
 def _find_builder_dir(name: str, **builder_kwargs: Any) -> Optional[str]:

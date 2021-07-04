@@ -48,8 +48,7 @@ class _FakeResponse(object):
 
   def iter_content(self, chunk_size):
     del chunk_size
-    for line in self.raw:
-      yield line
+    yield from self.raw
 
 
 class DownloaderTest(testing.TestCase):

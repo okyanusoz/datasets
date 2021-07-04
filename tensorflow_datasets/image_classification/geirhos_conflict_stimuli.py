@@ -107,11 +107,13 @@ class GeirhosConflictStimuli(tfds.core.GeneratorBasedBuilder):
 
     with tf.io.gfile.GFile(imagenet_mapping_path) as f:
       mapping_txt = f.read()
-    mapping = {}
-    for match in re.finditer(r"([a-z]+)\s*=\s*\[([^\]]+)\]", mapping_txt):
-      mapping[match.group(1)] = list(sorted(imagenet_names.intersection(
-          re.sub(r"\s", "", match.group(2)).split(","))))
-
+    mapping = {
+        match.group(1): list(
+            sorted(
+                imagenet_names.intersection(
+                    re.sub(r"\s", "", match.group(2)).split(","))))
+        for match in re.finditer(r"([a-z]+)\s*=\s*\[([^\]]+)\]", mapping_txt)
+    }
     # Process images.
     for shape_class_name in tf.io.gfile.listdir(data_dir_path):
       class_dir_path = os.path.join(data_dir_path, shape_class_name)

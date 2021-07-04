@@ -123,11 +123,11 @@ class ClincOOS(tfds.core.GeneratorBasedBuilder):
     with tf.io.gfile.GFile(filename) as f:
       reader = csv.DictReader(f)
       for row_id, row in enumerate(reader):
-        example = {}
-        example['text'] = row['text']
-        example['intent'] = row['intent']
-        example['domain'] = row['domain']
-        example['intent_name'] = row['intent_name']
-        example['domain_name'] = row['domain_name']
-
+        example = {
+            'text': row['text'],
+            'intent': row['intent'],
+            'domain': row['domain'],
+            'intent_name': row['intent_name'],
+            'domain_name': row['domain_name'],
+        }
         yield row_id, example

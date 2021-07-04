@@ -96,12 +96,10 @@ class WikiTableText(tfds.core.GeneratorBasedBuilder):
         values = [v.replace('_$$_', ' ') for v in values.split('_||_')]
         # The tables only have one row and we specify it because the dataset
         # follows a standarized table format.
-        table = []
-        for (header_i, value_i) in zip(headers, values):
-          table.append({
+        table = [{
               'column_header': header_i,
               'row_number': 1,
               'content': value_i
-          })
+          } for (header_i, value_i) in zip(headers, values)]
         text = text.replace('_$$_', ' ').replace(' .', '')
         yield i, {'input_text': {'table': table}, 'target_text': text}

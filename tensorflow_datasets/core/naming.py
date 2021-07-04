@@ -251,5 +251,4 @@ def filepaths_for_dataset_split(dataset_name, split, num_shards, data_dir,
       num_shards=num_shards,
       filetype_suffix=filetype_suffix,
   )
-  filepaths = [os.path.join(data_dir, fname) for fname in filenames]
-  return filepaths
+  return [os.path.join(data_dir, fname) for fname in filenames]

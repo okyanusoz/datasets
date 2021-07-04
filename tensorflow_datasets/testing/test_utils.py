@@ -161,9 +161,7 @@ class MockFs(object):
       return True
     # Check parent directory
     path = path + os.path.sep
-    if any(f.startswith(path) for f in self.files):
-      return True
-    return False
+    return any(f.startswith(path) for f in self.files)
 
   def mock(self):
     return mock_tf(

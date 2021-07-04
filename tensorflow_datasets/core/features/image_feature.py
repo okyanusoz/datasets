@@ -201,11 +201,11 @@ class Image(feature.FeatureConnector):
 
   def repr_html_batch(self, ex: np.ndarray) -> str:
     """`Sequence(Image())` are displayed as `<video>`."""
-    if ex.shape[0] == 1:
-      ex = ex.squeeze(axis=0)  # (1, h, w, c) -> (h, w, c)
-      return self.repr_html(ex)
-    else:
+    if ex.shape[0] != 1:
       return make_video_repr_html(ex, use_colormap=self._use_colormap)
+
+    ex = ex.squeeze(axis=0)  # (1, h, w, c) -> (h, w, c)
+    return self.repr_html(ex)
 
   @classmethod
   def from_json_content(cls, value: Json) -> 'Image':

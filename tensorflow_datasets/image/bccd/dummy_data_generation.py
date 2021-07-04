@@ -123,10 +123,11 @@ def _generate_data_for_set(set_name, example_start, num_examples):
   filepath = os.path.join(
       _output_dir(), "BCCD_Dataset-1.0/BCCD/ImageSets/Main/%s.txt" % set_name)
   _write_text_file(
-      filepath, "".join([
-          "BloodImage_{:05d}\n".format(example_id)
-          for example_id in range(example_start, example_start + num_examples)
-      ]))
+      filepath,
+      "".join("BloodImage_{:05d}\n".format(example_id)
+              for example_id in range(example_start, example_start +
+                                      num_examples)),
+  )
 
 
 def _generate_trainval_archive():

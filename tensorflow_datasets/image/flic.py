@@ -86,11 +86,10 @@ class FlicConfig(tfds.core.BuilderConfig):
 
 
 def _make_builder_configs():
-  configs = []
-  for data in _DATA_OPTIONS:
-    configs.append(
-        FlicConfig(name=data, version=tfds.core.Version("2.0.0"), data=data))
-  return configs
+  return [
+      FlicConfig(name=data, version=tfds.core.Version("2.0.0"), data=data)
+      for data in _DATA_OPTIONS
+  ]
 
 
 class Flic(tfds.core.GeneratorBasedBuilder):

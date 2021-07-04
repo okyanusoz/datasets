@@ -130,10 +130,8 @@ class Xsum(tfds.core.GeneratorBasedBuilder):
       filename = os.path.join(path, i + ".data")
       if tf.io.gfile.exists(filename):
         with tf.io.gfile.GFile(filename) as f:
-          text = "".join([
-              line for line in f.readlines()
-              if line not in _REMOVE_LINES and line.strip()
-          ])
+          text = "".join(line for line in f.readlines()
+                      if line not in _REMOVE_LINES and line.strip())
           # Each file follows below format:
           # [XSUM]URL[XSUM]
           # http://somelink

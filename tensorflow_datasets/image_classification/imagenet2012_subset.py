@@ -128,10 +128,9 @@ class Imagenet2012Subset(Imagenet2012):
 
   def _generate_examples(self, archive, subset=None, validation_labels=None):
     """Yields examples."""
-    if validation_labels:  # Validation split
-      for key, example in self._generate_examples_validation(archive,
-                                                             validation_labels):
-        yield key, example
+    if validation_labels:# Validation split
+      yield from self._generate_examples_validation(archive,
+                                                             validation_labels)
     # Training split. Main archive contains archives names after a synset noun.
     # Each sub-archive contains pictures associated to that synset.
     for fname, fobj in archive:

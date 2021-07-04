@@ -613,7 +613,7 @@ class FeatureConnector(object):
     for k, v in additional_info.items():
       repr_info[k] = v
 
-    info_str = ', '.join(['%s=%s' % (k, v) for k, v in repr_info.items()])
+    info_str = ', '.join('%s=%s' % (k, v) for k, v in repr_info.items())
     return '{}({})'.format(
         type(self).__name__,
         info_str,

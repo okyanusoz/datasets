@@ -190,7 +190,7 @@ class RegisteredTest(testing.TestCase):
       class ColabBuilder(EmptyDatasetBuilder):  # pylint: disable=function-redefined
         pass
 
-      self.assertIsInstance(load.builder(name), ColabBuilder)
+      self.assertIsInstance(load.builder(name), old_colab_class)
       self.assertNotIsInstance(load.builder(name), old_colab_class)
 
   def test_duplicate_dataset(self):
